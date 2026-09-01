@@ -177,6 +177,7 @@ _STREAM_CHUNK_BYTES = 1024 * 1024
 _SECRET_SCAN_OVERLAP_BYTES = 4096
 _INITIAL_PUBLISH_ENV = "DAEDALUS_INITIAL_PUBLISH"
 _TEST_SUITE_TIMEOUT_SECONDS = 20 * 60
+_GIT_PUSH_TIMEOUT_SECONDS = 45 * 60
 
 
 def _dangerously_unanchored_private_rule(rule: str) -> bool:
@@ -1308,7 +1309,22 @@ class ReleaseGuard:
             push_environment[_INITIAL_PUBLISH_ENV] = "1"
         else:
             push_environment.pop(_INITIAL_PUBLISH_ENV, None)
-        pushed = self._git(*arguments, timeout=300, env=push_environment)
+        try:
+            pushed = self._git(
+                *arguments,
+                timeout=_GIT_PUSH_TIMEOUT_SECONDS,
+                env=push_environment,
+            )
+        except subprocess.TimeoutExpired:
+            staged_report.findings.append(
+                Finding(
+                    BLOCK,
+                    "push",
+                    "Git push exceeded the 45-minute timeout; remote state is unknown.",
+                    remediation="Fetch and verify the remote branch, then rerun Safe Push without forcing.",
+                )
+            )
+            return staged_report
         if pushed.returncode:
             staged_report.findings.append(
                 Finding(BLOCK, "push", pushed.stderr.strip() or "Git push failed.")

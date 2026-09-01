@@ -298,6 +298,42 @@ def test_no_change_no_ahead_push_is_a_noop(
     )
 
 
+def test_push_timeout_is_bounded_and_reported_fail_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repo = make_repo(tmp_path)
+    baseline = initialize_with_baseline(repo)
+    git(repo, "remote", "add", "origin", "https://github.com/example/daedalus.git")
+    git(repo, "update-ref", "refs/remotes/origin/main", baseline)
+    git(repo, "branch", "--set-upstream-to=origin/main", "main")
+    (repo / "outgoing.py").write_text("print('outgoing')\n", encoding="utf-8")
+    git(repo, "add", "outgoing.py")
+    git(repo, "commit", "-m", "outgoing")
+    guard = ReleaseGuard(repo)
+    monkeypatch.setattr(guard, "_scan_ruff", lambda _findings: None)
+    monkeypatch.setattr(guard, "_scan_tests", lambda _findings: None)
+    monkeypatch.setattr(guard, "_scan_dependencies", lambda _findings: None)
+    monkeypatch.setattr(guard, "_scan_github_dependabot", lambda _findings: None)
+    original_git = guard._git
+    captured: dict[str, object] = {}
+
+    def timing_out_git(*arguments: str, **kwargs):
+        if arguments and arguments[0] == "push":
+            captured.update(kwargs)
+            raise subprocess.TimeoutExpired(arguments, kwargs["timeout"])
+        return original_git(*arguments, **kwargs)
+
+    monkeypatch.setattr(guard, "_git", timing_out_git)
+
+    report = guard.safe_push("no additional change")
+
+    assert captured["timeout"] == 2700
+    assert any(
+        item.level == BLOCK and item.check == "push" and "45-minute timeout" in item.message
+        for item in report.findings
+    )
+
+
 def test_dependency_remediation_requires_explicit_push_flag() -> None:
     parser = release_guard_module._parser()
 
