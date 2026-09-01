@@ -77,8 +77,11 @@ For the public repository, configure and review as available:
 - least-privilege workflow permissions;
 - artifact provenance/attestation and SBOM support.
 
-Daedalus's hosted security workflow supplies CodeQL, Gitleaks, Bandit,
-pull-request dependency review, Zizmor workflow lint, and OpenSSF Scorecard. Actions are pinned to full
+Daedalus's hosted security workflow supplies Gitleaks, Bandit, and Zizmor workflow
+lint at every repository visibility. Public repositories additionally run CodeQL,
+pull-request dependency review, and OpenSSF Scorecard publication because those
+GitHub-hosted result channels require public visibility or an eligible private-repository
+security plan. Actions are pinned to full
 commit SHAs. The first-publication helper enables the available repository-side
 security features, but the owner must still review branch/ruleset policy and
 required check names after the first successful run.

@@ -34,6 +34,14 @@ def test_security_workflow_has_layered_scanners_and_bounded_jobs() -> None:
         assert scanner in source
     assert source.count("timeout-minutes:") >= 6
     assert "persist-credentials: false" in source
+    assert source.count("github.event.repository.visibility == 'public'") == 3
+
+
+def test_linux_gui_matrix_installs_required_qt_runtime_libraries() -> None:
+    source = (WORKFLOWS / "ci.yml").read_text(encoding="utf-8")
+    assert "if: runner.os == 'Linux'" in source
+    assert "libegl1" in source
+    assert "libxkbcommon-x11-0" in source
 
 
 def test_release_publication_is_split_from_candidate_execution() -> None:

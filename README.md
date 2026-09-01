@@ -123,8 +123,9 @@ reviewed updates. Unattended push is opt-in and is not the recommended default.
 
 Hosted automation uses immutable action commit pins and least-privilege tokens.
 CI covers supported Python/OS combinations, Ruff, compilation, tests, Release
-Guard policy, and dependency audit. The security workflow adds CodeQL, full-history
-Gitleaks, Bandit, dependency review, Zizmor workflow lint, and OpenSSF Scorecard. Tagged releases are
+Guard policy, and dependency audit. Every repository visibility runs full-history
+Gitleaks, Bandit, and Zizmor workflow lint; public repositories additionally run
+CodeQL, dependency review, and OpenSSF Scorecard publication. Tagged releases are
 validated on `main`, generate a reproducible CycloneDX 1.7 SBOM and checksum, and
 publish provenance/SBOM attestations from a separate write-enabled job.
 

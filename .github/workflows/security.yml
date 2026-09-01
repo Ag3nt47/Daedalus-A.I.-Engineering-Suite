@@ -19,7 +19,7 @@ concurrency:
 jobs:
   codeql:
     name: CodeQL
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.event.repository.visibility == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -70,7 +70,7 @@ jobs:
 
   dependency-review:
     name: Pull-request dependency review
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.repository.visibility == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -100,7 +100,7 @@ jobs:
 
   scorecard:
     name: OpenSSF Scorecard
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.event.repository.visibility == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
