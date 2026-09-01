@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+set -eu
+ROOT="$(git rev-parse --show-toplevel)"
+if [ -x "$ROOT/.venv/Scripts/python.exe" ]; then
+  PYTHON="$ROOT/.venv/Scripts/python.exe"
+elif [ -x "$ROOT/.venv/bin/python" ]; then
+  PYTHON="$ROOT/.venv/bin/python"
+else
+  PYTHON="python"
+fi
+REMOTE_NAME="${1:-origin}"
+"$PYTHON" -m daedalus.services.release_guard --repo "$ROOT" pre-push --remote-name "$REMOTE_NAME"

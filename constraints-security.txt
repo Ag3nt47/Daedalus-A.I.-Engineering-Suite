@@ -1,0 +1,3 @@
+# Release Guard writes minimum patched versions here only when a published
+# advisory has an explicit compatible fix and the full test suite passes.
+

@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "resource_version": "2026.08",
+  "recipes": [
+    {
+      "id": "recipe.shape-detective",
+      "title": "Shape Detective",
+      "level": "beginner",
+      "estimated_hours": 3,
+      "summary": "Predict array compatibility, result shape, and memory before asking NumPy to execute the operation.",
+      "prerequisite_module_ids": ["module.numpy-arrays"],
+      "deliverable": "A calculator that explains broadcast and matrix-product decisions axis by axis.",
+      "steps": [
+        "Accept operand shapes, dtypes, and an operation without evaluating arbitrary code.",
+        "Right-align elementwise shapes and label each compatible, expanded, or conflicting axis.",
+        "Implement the separate (..., m, k) @ (..., k, n) rule for matrix multiplication.",
+        "Compute output elements and bytes from dtype item size.",
+        "Execute a generated safe NumPy case and compare the actual result with the prediction."
+      ],
+      "gates": [
+        "Predicts scalar, vector, batch-bias, multi-axis broadcast, and incompatible cases.",
+        "Predicts matrix and batched matrix multiplication without trial transposes.",
+        "Exact output byte estimate equals ndarray.nbytes for fixtures.",
+        "Failure messages identify the first incompatible axis and link to the glossary."
+      ],
+      "extensions": ["Add activation and optimizer-state memory estimates.", "Render an axis-alignment diagram."],
+      "source_ids": ["numpy-broadcasting", "numpy-dtypes", "numpy-linalg"]
+    },
+    {
+      "id": "recipe.derivative-detective",
+      "title": "Derivative Detective",
+      "level": "builder",
+      "estimated_hours": 5,
+      "summary": "Compare local derivative rules, centered finite differences, and reverse-mode accumulation on the same expression.",
+      "prerequisite_module_ids": ["module.calculus-probability", "module.scalar-tape"],
+      "deliverable": "An expression graph that displays each node value, local rule, incoming sensitivity, and accumulated gradient.",
+      "steps": [
+        "Implement a scalar node for add, multiply, power, exp, log, and ReLU.",
+        "Topologically order the graph and seed the scalar output gradient with one.",
+        "Accumulate every parent contribution rather than overwriting at graph joins.",
+        "Compute centered finite differences over a range of epsilon values.",
+        "Display relative error and explain truncation-versus-rounding behavior."
+      ],
+      "gates": [
+        "Branched expressions such as x*x + x accumulate both paths.",
+        "Smooth-function relative gradient error is below 1e-6 in float64.",
+        "Invalid log-domain input yields a typed explanation instead of NaN propagation.",
+        "Repeated backward behavior is documented and tested."
+      ],
+      "extensions": ["Add vector-Jacobian products.", "Export a graph trace for the diagnostic viewer."],
+      "source_ids": ["mit-calculus", "paper-autodiff", "paper-backprop"]
+    },
+    {
+      "id": "recipe.first-learner",
+      "title": "First Learner: Linear Regression",
+      "level": "beginner",
+      "estimated_hours": 4,
+      "summary": "Fit a known line from seeded synthetic data using equations and NumPy primitives.",
+      "prerequisite_module_ids": ["module.linear-logistic"],
+      "deliverable": "A reproducible trainer, loss chart, parameter-trajectory chart, and least-squares comparison report.",
+      "steps": [
+        "Generate x and y = 3x + 2 + noise with an explicit Generator and seed.",
+        "Implement prediction and mean-squared error using array operations.",
+        "Derive and implement gradients for slope and intercept.",
+        "Train with gradient descent while recording configuration and metrics.",
+        "Compare fitted parameters to numpy.linalg.lstsq as an oracle."
+      ],
+      "gates": [
+        "Analytical and centered finite-difference gradients agree below 1e-6 relative error.",
+        "Loss falls on the fixed dataset and fitted parameters meet declared tolerances.",
+        "A rerun under the recorded environment and seed reproduces the history.",
+        "Training statistics never inspect a held-out evaluation split."
+      ],
+      "extensions": ["Add L2 regularization.", "Display confidence intervals from repeated seeded datasets."],
+      "source_ids": ["mit-linear-algebra", "mit-probability", "numpy-linalg", "numpy-rng"]
+    },
+    {
+      "id": "recipe.xor-ladder",
+      "title": "XOR Ladder",
+      "level": "builder",
+      "estimated_hours": 8,
+      "summary": "Use XOR to expose a single linear unit's limit, then build and diagnose a hidden-layer network.",
+      "prerequisite_module_ids": ["module.tensor-autograd", "module.optimizers-training"],
+      "deliverable": "A deterministic XOR experiment with architecture, training, gradient health, and checkpoint panels.",
+      "steps": [
+        "Train one linear unit and explain why it cannot separate XOR.",
+        "Add a hidden Linear-ReLU block and verify every forward shape.",
+        "Train with SGD, then implement and compare Adam from its equations.",
+        "Record loss, predictions, parameter norms, gradient norms, seed, and versions.",
+        "Save NPZ arrays plus validated JSON metadata and reload into a fresh model."
+      ],
+      "gates": [
+        "The linear baseline failure is preserved as evidence, not hidden.",
+        "The fixed-seed multilayer model classifies all four XOR points.",
+        "All layer and loss gradients pass finite-difference checks below 1e-5.",
+        "Checkpoint arrays round-trip exactly with allow_pickle disabled."
+      ],
+      "extensions": ["Add a decision-surface visualizer.", "Run a small seed-sensitivity study."],
+      "source_ids": ["paper-backprop", "paper-glorot", "paper-adam", "numpy-savez"]
+    },
+    {
+      "id": "recipe.tiny-transformer",
+      "title": "Tiny Character Transformer",
+      "level": "advanced",
+      "estimated_hours": 16,
+      "summary": "Build one causal transformer block from array operations and the Daedalus autograd engine.",
+      "prerequisite_module_ids": ["module.attention-transformer", "module.diagnostics-checkpoints"],
+      "deliverable": "A one-block character model with attention inspection, deterministic training, checkpointing, and generation.",
+      "steps": [
+        "Create a character vocabulary and fixed-length next-token batches.",
+        "Implement embeddings, positional information, scaled dot-product attention, and a causal mask.",
+        "Add residual paths, normalization, feed-forward layers, and stable cross-entropy.",
+        "Overfit one small batch before attempting a larger local text sample.",
+        "Inspect attention row sums and masked probabilities, then generate from a fixed prompt."
+      ],
+      "gates": [
+        "Attention probabilities are finite, each row sums to one, and future positions are zero.",
+        "Primitive and block gradients pass targeted finite-difference checks.",
+        "Fixed-corpus training loss falls by at least 50 percent from its initial value.",
+        "Locked environment, seed, input hash, and checkpoint reproduce the reference generation."
+      ],
+      "extensions": ["Add multiple heads.", "Profile naive attention memory against sequence length."],
+      "source_ids": ["paper-transformer", "paper-autodiff", "paper-adam", "numpy-rng"]
+    },
+    {
+      "id": "recipe.push-guardian-restore",
+      "title": "Push Guardian and Restore Drill",
+      "level": "advanced",
+      "estimated_hours": 10,
+      "summary": "Exercise publication and recovery controls against controlled clean and unsafe fixtures.",
+      "prerequisite_module_ids": ["module.release-guard", "module.operator-ui-backup"],
+      "deliverable": "A dry-run release report and a hash-verified restore into a new location.",
+      "steps": [
+        "Create fixture repositories for clean content, a fake secret, an ignored untracked file, an ignored tracked file, and a push conflict.",
+        "Inspect the exact outgoing commit range and redact report evidence.",
+        "Join lockfile findings with available local audit and authenticated Dependabot alert data without claiming unavailable data.",
+        "Back up source and private workspace to a marked destination without deleting destination-only files.",
+        "Corrupt the working fixture, restore into a new path, and compare file hashes."
+      ],
+      "gates": [
+        "Unsafe fixtures block and the clean fixture passes with deterministic reasons.",
+        "No report contains the fake secret value or private absolute paths.",
+        "The tool never force-pushes, silently rewrites dependencies, or publishes user workspaces.",
+        "Restore never overwrites the active workspace and all expected hashes match."
+      ],
+      "extensions": ["Add a GitHub Actions parity check.", "Attach an SBOM and artifact checksum to a test release."],
+      "source_ids": ["git-gitignore", "git-hooks", "github-dependabot-api", "github-push-protection", "nist-ssdf"]
+    }
+  ]
+}

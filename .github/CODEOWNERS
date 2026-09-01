@@ -1,0 +1,6 @@
+# Security-sensitive automation and trust policy require owner review.
+/.github/ @Ag3nt47
+/src/daedalus/services/release_guard.py @Ag3nt47
+/src/daedalus/services/backup.py @Ag3nt47
+/tools/ @Ag3nt47
+/SECURITY.md @Ag3nt47

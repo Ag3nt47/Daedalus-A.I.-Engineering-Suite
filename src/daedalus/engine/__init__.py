@@ -1,0 +1,205 @@
+"""Training pipelines, datasets, calculators, and diagnostics."""
+
+from __future__ import annotations
+
+from importlib import import_module
+from typing import Any
+
+_MODULE_EXPORTS = {
+    ".advanced_calculators": (
+        "AttentionActivationEstimate",
+        "CalculatorError",
+        "EstimateInputError",
+        "QuantizedMemoryEstimate",
+        "ShapeCalculationError",
+        "TrainingSchedule",
+        "TrainingTimeEstimate",
+        "TransformerActivationEstimate",
+        "attention_parameter_count",
+        "batches_per_epoch",
+        "broadcast_output_shape",
+        "convolution_output_shape",
+        "convolution_parameter_count",
+        "estimate_attention_activation_memory",
+        "estimate_quantized_model_bytes",
+        "estimate_transformer_activation_memory",
+        "initialization_scale",
+        "matmul_output_shape",
+        "project_training_time",
+        "training_schedule",
+        "transformer_block_parameter_count",
+    ),
+    ".calculators": (
+        "LayerShape",
+        "MemoryEstimate",
+        "ParameterSummary",
+        "calculate_output_shapes",
+        "count_parameters",
+        "estimate_array_memory",
+        "estimate_model_memory",
+        "format_bytes",
+        "infer_output_shape",
+        "parameter_summary",
+    ),
+    ".datasets": (
+        "make_regression",
+        "make_xor",
+        "regression_dataset",
+        "train_test_split",
+        "xor_dataset",
+    ),
+    ".evaluation": (
+        "EvaluationError",
+        "EvaluationLimits",
+        "EvaluationReport",
+        "HeldOutSplit",
+        "ModelEvaluator",
+        "evaluate_checkpoint",
+    ),
+    ".gradient_checker": (
+        "GradientCheckResult",
+        "check_model_gradients",
+        "gradient_check",
+    ),
+    ".profiler": (
+        "GradientDiagnostic",
+        "TimingStats",
+        "analyze_gradients",
+        "profile_callable",
+    ),
+    ".trainer": ("Callback", "EarlyStopping", "History", "Trainer"),
+    ".training_data": (
+        "DatasetAssessment",
+        "EvaluationMetrics",
+        "PreparedTrainingData",
+        "TaskType",
+        "assess_training_data",
+        "evaluate_predictions",
+        "prepare_training_data",
+    ),
+    ".weight_tools": (
+        "WEIGHT_TOOL_SPECS",
+        "ArrayDescriptor",
+        "ConstraintFitResult",
+        "ExtremeLearningMachineResult",
+        "HypernetworkResult",
+        "RecurrentKernelResult",
+        "ToolHint",
+        "TruthTableCompilation",
+        "UncertaintySampleResult",
+        "WeightToolError",
+        "WeightToolRecord",
+        "WeightToolSpec",
+        "compile_truth_table",
+        "fit_extreme_learning_machine",
+        "fit_physics_constrained_polynomial",
+        "get_weight_tool_spec",
+        "recommend_weight_tool",
+        "select_uncertain_candidates",
+        "synthesize_low_rank_adapter",
+        "synthesize_recurrent_kernel",
+    ),
+}
+_EXPORT_MODULE = {
+    name: module_name
+    for module_name, names in _MODULE_EXPORTS.items()
+    for name in names
+}
+
+__all__ = [
+    "Callback",
+    "CalculatorError",
+    "AttentionActivationEstimate",
+    "DatasetAssessment",
+    "EstimateInputError",
+    "EarlyStopping",
+    "EvaluationError",
+    "EvaluationLimits",
+    "EvaluationMetrics",
+    "EvaluationReport",
+    "GradientCheckResult",
+    "GradientDiagnostic",
+    "History",
+    "HeldOutSplit",
+    "LayerShape",
+    "MemoryEstimate",
+    "ModelEvaluator",
+    "ParameterSummary",
+    "PreparedTrainingData",
+    "QuantizedMemoryEstimate",
+    "ShapeCalculationError",
+    "TimingStats",
+    "TaskType",
+    "TrainingSchedule",
+    "TrainingTimeEstimate",
+    "Trainer",
+    "TransformerActivationEstimate",
+    "ArrayDescriptor",
+    "ConstraintFitResult",
+    "ExtremeLearningMachineResult",
+    "HypernetworkResult",
+    "RecurrentKernelResult",
+    "ToolHint",
+    "TruthTableCompilation",
+    "UncertaintySampleResult",
+    "WEIGHT_TOOL_SPECS",
+    "WeightToolError",
+    "WeightToolRecord",
+    "WeightToolSpec",
+    "analyze_gradients",
+    "assess_training_data",
+    "attention_parameter_count",
+    "batches_per_epoch",
+    "broadcast_output_shape",
+    "calculate_output_shapes",
+    "check_model_gradients",
+    "count_parameters",
+    "convolution_output_shape",
+    "convolution_parameter_count",
+    "compile_truth_table",
+    "estimate_array_memory",
+    "estimate_attention_activation_memory",
+    "estimate_model_memory",
+    "estimate_quantized_model_bytes",
+    "estimate_transformer_activation_memory",
+    "fit_extreme_learning_machine",
+    "fit_physics_constrained_polynomial",
+    "evaluate_predictions",
+    "evaluate_checkpoint",
+    "format_bytes",
+    "gradient_check",
+    "get_weight_tool_spec",
+    "infer_output_shape",
+    "initialization_scale",
+    "make_regression",
+    "make_xor",
+    "matmul_output_shape",
+    "parameter_summary",
+    "profile_callable",
+    "prepare_training_data",
+    "project_training_time",
+    "regression_dataset",
+    "recommend_weight_tool",
+    "select_uncertain_candidates",
+    "synthesize_low_rank_adapter",
+    "synthesize_recurrent_kernel",
+    "train_test_split",
+    "training_schedule",
+    "transformer_block_parameter_count",
+    "xor_dataset",
+]
+
+
+def __getattr__(name: str) -> Any:
+    """Resolve a public engine symbol without importing unrelated pipelines."""
+
+    module_name = _EXPORT_MODULE.get(name)
+    if module_name is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    value = getattr(import_module(module_name, __name__), name)
+    globals()[name] = value
+    return value
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | set(__all__))

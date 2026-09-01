@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Daedalus wing and neural labyrinth">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#22d3a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="42" fill="#020617"/>
+  <path d="M39 148c34-8 55-28 72-69-1 51-16 86-54 110 32-6 58-22 77-51-5 39-27 66-65 80" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M217 148c-34-8-55-28-72-69 1 51 16 86 54 110-32-6-58-22-77-51 5 39 27 66 65 80" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="128" cy="54" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="7"/>
+  <path d="M128 72v85m-34-56h68m-52 28h36" fill="none" stroke="#f1f5f9" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="94" cy="101" r="8" fill="#22d3a6"/><circle cx="162" cy="101" r="8" fill="#22d3a6"/>
+  <circle cx="110" cy="129" r="8" fill="#38bdf8"/><circle cx="146" cy="129" r="8" fill="#38bdf8"/>
+</svg>

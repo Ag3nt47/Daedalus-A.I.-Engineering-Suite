@@ -1,0 +1,82 @@
+# Daedalus public source repository
+# User-created work is kept outside this repository by default. These rules are
+# defense in depth for anyone who deliberately selects an in-repo workspace.
+
+# Secrets and local identity
+/.env
+/.env.*
+!/.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+*.token
+credentials*.json
+secrets*.json
+settings.local.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+/.venv/
+/venv/
+/env/
+/.dev-tools/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# User-created AI assets: never publish from the suite repository
+/workspace/
+/workspaces/
+/user-workspaces/
+/projects/
+/datasets/
+/weights/
+/checkpoints/
+/training-runs/
+/logs/
+/models/
+*.npz
+*.npy
+*.onnx
+*.safetensors
+*.gguf
+*.csv
+*.parquet
+
+# Runtime, reports, backup state, and build output
+.daedalus/
+runtime-data/
+reports/local/
+backup-manifest*.json
+dist/
+build/
+*.spec
+*.log
+*.sqlite*
+*.db
+
+# Locally generated/review artifacts. The installer rebuilds the launcher from
+# tools/launcher/DaedalusLauncher.cs when Daedalus.exe is absent.
+/Daedalus.exe
+/Daedalus AI Engineering Suite.docx
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*~
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.lnk
+
+# Temporary document/UI QA artifacts
+.tmp/
+*.tmp
+*.bak

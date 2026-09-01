@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "purpose": "Pinned development-only tools for guarded GitHub publication. They are not Daedalus runtime dependencies.",
+  "updated_utc": "2026-08-30T00:00:00Z",
+  "assets": [
+    {
+      "id": "github-cli",
+      "repository": "https://github.com/cli/cli",
+      "version": "2.96.0",
+      "license": "MIT",
+      "asset": "gh_2.96.0_windows_amd64.zip",
+      "url": "https://github.com/cli/cli/releases/download/v2.96.0/gh_2.96.0_windows_amd64.zip",
+      "sha256": "c2d6acc935cd2f00e2144d7e036d5cd82e6b6bd5594e8c75aa75ef2a4ed6aac3",
+      "executable": "gh.exe"
+    },
+    {
+      "id": "gitleaks",
+      "repository": "https://github.com/gitleaks/gitleaks",
+      "version": "8.30.1",
+      "license": "MIT",
+      "asset": "gitleaks_8.30.1_windows_x64.zip",
+      "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_windows_x64.zip",
+      "sha256": "d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e",
+      "executable": "gitleaks.exe",
+      "executable_sha256": "17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c"
+    }
+  ]
+}

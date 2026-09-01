@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "resource_version": "2026.08",
+  "redaction_policy": "Capture shapes, dtypes, counts, versions, and redacted paths. Never capture raw secrets or private dataset values by default.",
+  "cards": [
+    {
+      "id": "numpy.broadcast-mismatch",
+      "title": "Operands cannot broadcast",
+      "level": "beginner",
+      "severity": "error",
+      "triggers": [
+        {"kind": "exception-message", "pattern": "operands could not be broadcast together|shape mismatch"}
+      ],
+      "plain_cause": "The two shapes cannot be aligned under NumPy's trailing-axis broadcasting rules.",
+      "likely_causes": ["Feature and batch axes were swapped.", "A required length-one axis is missing.", "Two genuinely different feature counts were combined."],
+      "evidence": ["operation", "left_shape", "right_shape", "left_dtype", "right_dtype"],
+      "checks": ["Right-align both shapes.", "For each pair, require equality or a 1.", "Name the semantic role of every axis before reshaping."],
+      "safe_fixes": ["Correct the upstream shape contract.", "Use expand_dims or reshape only when the missing axis is semantically real.", "Add a unit test for the intended shape pair."],
+      "never_actions": ["Do not flatten inputs just to silence the error.", "Do not tile large arrays when broadcasting is sufficient."],
+      "glossary_ids": ["array.broadcasting", "array.shape", "array.axis"],
+      "source_ids": ["numpy-broadcasting"]
+    },
+    {
+      "id": "numpy.matmul-core-mismatch",
+      "title": "Matrix multiplication dimensions disagree",
+      "level": "beginner",
+      "severity": "error",
+      "triggers": [
+        {"kind": "exception-message", "pattern": "matmul: Input operand|core dimension|size [0-9]+ is different"}
+      ],
+      "plain_cause": "The left operand's last dimension does not equal the right operand's second-to-last dimension.",
+      "likely_causes": ["A weight matrix was transposed incorrectly.", "Samples are arranged as columns in one place and rows in another.", "The configured input feature count is wrong."],
+      "evidence": ["left_shape", "right_shape", "expected_input_features", "layer_name"],
+      "checks": ["Label the operation as (..., m, k) @ (..., k, n).", "Compare the two k dimensions.", "Verify the preceding layer's documented output shape."],
+      "safe_fixes": ["Correct the layer configuration or the one incorrect transpose.", "Add forward shape assertions at the layer boundary."],
+      "never_actions": ["Do not transpose repeatedly until the exception disappears; verify semantics first."],
+      "glossary_ids": ["math.matrix", "array.shape", "array.axis"],
+      "source_ids": ["numpy-linalg", "mit-linear-algebra"]
+    },
+    {
+      "id": "numeric.nonfinite",
+      "title": "NaN or infinity appeared",
+      "level": "builder",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "NONFINITE_VALUE"},
+        {"kind": "warning-message", "pattern": "invalid value encountered|overflow encountered|divide by zero"}
+      ],
+      "plain_cause": "A numerical operation produced a value outside the usable finite range or an undefined result.",
+      "likely_causes": ["Exponentials or products overflowed.", "A logarithm, square root, or division received an invalid input.", "A high learning rate caused parameter or gradient explosion.", "The input already contained non-finite values."],
+      "evidence": ["first_nonfinite_operation", "shape", "dtype", "finite_count", "minimum", "maximum", "mean", "gradient_norm", "learning_rate"],
+      "checks": ["Find the first non-finite operation, not only the final loss.", "Check inputs and gradients with isfinite.", "Inspect domain assumptions and value scale."],
+      "safe_fixes": ["Use stable formulations and explicit domain validation.", "Normalize inputs or lower the learning rate after confirming gradients are correct.", "Add a regression fixture containing the failing scale."],
+      "never_actions": ["Do not replace NaN with zero without locating its origin.", "Do not hide warnings globally."],
+      "glossary_ids": ["array.dtype", "math.gradient", "training.learning-rate"],
+      "source_ids": ["numpy-dtypes", "paper-glorot"]
+    },
+    {
+      "id": "numeric.unstable-softmax",
+      "title": "Softmax overflow or invalid probabilities",
+      "level": "builder",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "SOFTMAX_NONFINITE|SOFTMAX_SUM_MISMATCH"},
+        {"kind": "warning-message", "pattern": "overflow encountered in exp"}
+      ],
+      "plain_cause": "Exponentiating raw logits overflowed, underflowed, or normalized along the wrong axis.",
+      "likely_causes": ["The maximum logit was not subtracted.", "The reduction axis is not the class axis.", "Probabilities were passed into a loss that expects logits."],
+      "evidence": ["logit_shape", "logit_dtype", "class_axis", "logit_minimum", "logit_maximum", "probability_row_sums"],
+      "checks": ["Subtract max(logits) with keepdims along the class axis.", "Verify every probability row is finite, nonnegative, and sums to one.", "Confirm the loss input contract."],
+      "safe_fixes": ["Implement shifted softmax or a combined stable log-softmax/cross-entropy.", "Test logits [-1000, 0, 1000] and batched multidimensional cases."],
+      "never_actions": ["Do not clip probabilities until the unstable operation is understood."],
+      "glossary_ids": ["training.softmax", "training.logit", "array.axis"],
+      "source_ids": ["numpy-fundamentals", "paper-backprop"]
+    },
+    {
+      "id": "autograd.gradient-accumulation",
+      "title": "Gradient contributions were lost or left stale",
+      "level": "builder",
+      "severity": "error",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "GRADIENT_ACCUMULATION_MISMATCH|STALE_GRADIENT"}
+      ],
+      "plain_cause": "A tensor used along multiple graph paths had one contribution overwrite another, or a previous step's gradient was unintentionally reused.",
+      "likely_causes": ["Backward assigned instead of added at a branch join.", "zero_grad was omitted between independent optimizer steps.", "Repeated backward semantics were not defined."],
+      "evidence": ["tensor_id", "incoming_contribution_count", "gradient_before", "gradient_after", "optimizer_step", "graph_retain_state"],
+      "checks": ["Compare a branched expression such as x*x + x.", "Check whether every incoming edge contributes exactly once.", "Separate intentional micro-batch accumulation from stale state."],
+      "safe_fixes": ["Add contributions at graph joins.", "Clear parameter gradients at the documented training-loop point.", "Add branch and repeated-backward tests."],
+      "never_actions": ["Do not always overwrite or always preserve gradients; make lifecycle semantics explicit."],
+      "glossary_ids": ["autograd.gradient-buffering", "autograd.graph", "math.gradient"],
+      "source_ids": ["paper-autodiff", "paper-backprop"]
+    },
+    {
+      "id": "autograd.broadcast-reduction",
+      "title": "Broadcasted gradient did not return to input shape",
+      "level": "builder",
+      "severity": "error",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "GRADIENT_SHAPE_MISMATCH|UNBROADCAST_REQUIRED"}
+      ],
+      "plain_cause": "The backward rule kept repeated output axes instead of summing them back to the original input shape.",
+      "likely_causes": ["A bias gradient retained the batch axis.", "Leading axes introduced during broadcasting were not reduced.", "Original length-one axes were reduced without keepdims."],
+      "evidence": ["input_shape", "output_shape", "incoming_gradient_shape", "reduced_axes", "result_gradient_shape"],
+      "checks": ["Remove extra leading axes by summation.", "Sum every original axis of length one with keepdims.", "Assert the final gradient shape exactly equals the input shape."],
+      "safe_fixes": ["Centralize a tested sum-to-shape helper.", "Gradient-check scalar, bias, and multi-axis broadcast cases."],
+      "never_actions": ["Do not reshape away extra values without summing their contributions."],
+      "glossary_ids": ["autograd.sum-to-shape", "array.broadcasting", "array.shape"],
+      "source_ids": ["numpy-broadcasting", "paper-autodiff"]
+    },
+    {
+      "id": "training.diverging-loss",
+      "title": "Training loss is rising, oscillating, or exploding",
+      "level": "builder",
+      "severity": "warning",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "LOSS_DIVERGING|LOSS_OSCILLATING"}
+      ],
+      "plain_cause": "Optimizer updates are not moving the current model toward a stable lower objective.",
+      "likely_causes": ["Learning rate is too high.", "A derivative sign, scale, or batch reduction is wrong.", "Inputs are badly scaled.", "Initialization or activation choice causes unstable gradients.", "The target/loss pairing is incorrect."],
+      "evidence": ["recent_losses", "learning_rate", "batch_size", "loss_reduction", "parameter_norms", "gradient_norms", "input_summary", "seed"],
+      "checks": ["Pass finite-difference checks before tuning.", "Overfit one small fixed batch.", "Compare update direction and magnitude for one parameter.", "Inspect input, activation, and gradient scales layer by layer."],
+      "safe_fixes": ["Correct math or reduction errors first.", "Then lower learning rate, normalize inputs, or use variance-aware initialization one change at a time.", "Preserve the failing run configuration for comparison."],
+      "never_actions": ["Do not tune many hyperparameters simultaneously.", "Do not treat a lower training loss as proof of leak-free evaluation."],
+      "glossary_ids": ["training.loss", "training.learning-rate", "math.gradient", "training.data-leakage"],
+      "source_ids": ["paper-glorot", "paper-adam", "paper-backprop"]
+    },
+    {
+      "id": "workspace.path-boundary",
+      "title": "Path leaves the private workspace boundary",
+      "level": "beginner",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "exception-message", "pattern": "Path escapes the private workspace|outside the private projects directory|workspace must be outside"}
+      ],
+      "plain_cause": "The requested file resolves outside the configured private workspace or places the private workspace inside the public source tree.",
+      "likely_causes": ["A relative path contains parent traversal.", "A symlink or junction resolves elsewhere.", "The source or workspace root was configured incorrectly."],
+      "evidence": ["redacted_requested_path", "redacted_resolved_path", "redacted_workspace_root", "operation"],
+      "checks": ["Resolve both path and allowed root before comparison.", "Check symlinks/junctions and drive changes.", "Confirm user projects and source use separate roots."],
+      "safe_fixes": ["Choose a location beneath the private workspace.", "Move the workspace outside the source repository.", "Require explicit user confirmation for any root change."],
+      "never_actions": ["Do not disable the boundary check for convenience.", "Do not log private full paths in public reports."],
+      "glossary_ids": ["workspace.sandbox", "git.worktree", "security.least-privilege"],
+      "source_ids": ["python-pathlib", "python-subprocess", "nist-ssdf"]
+    },
+    {
+      "id": "git.ignored-but-tracked",
+      "title": "An ignored path is still tracked",
+      "level": "beginner",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "IGNORED_BUT_TRACKED"},
+        {"kind": "git-message", "pattern": "already tracked|cached in the index"}
+      ],
+      "plain_cause": ".gitignore filters untracked paths; it does not remove a file already stored in the index or history.",
+      "likely_causes": ["The file was staged before the ignore rule existed.", "A broad add operation captured private output.", "The ignore pattern matches a different relative path than expected."],
+      "evidence": ["redacted_path", "tracked_state", "matching_ignore_rule", "outgoing_commit_range"],
+      "checks": ["Run git check-ignore -v for the path.", "Run git ls-files for tracked state.", "Inspect the outgoing commit range for earlier copies."],
+      "safe_fixes": ["Stop tracking the file without deleting the private working copy, then commit that removal.", "Rotate any exposed credential and assess history cleanup separately.", "Keep user workspaces outside the repository."],
+      "never_actions": ["Do not assume adding an ignore rule removes history.", "Do not run destructive history rewriting automatically."],
+      "glossary_ids": ["git.ignore", "git.index", "security.secret"],
+      "source_ids": ["git-gitignore", "git-book"]
+    },
+    {
+      "id": "git.push-conflict",
+      "title": "Push rejected because the remote moved",
+      "level": "beginner",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "git-message", "pattern": "non-fast-forward|fetch first|failed to push some refs"}
+      ],
+      "plain_cause": "The remote branch contains commits that are not in the local branch, so Git refused to discard them.",
+      "likely_causes": ["Another contributor pushed first.", "The same branch changed on another machine.", "Local history was rewritten."],
+      "evidence": ["remote_name", "branch_name", "local_head", "remote_tracking_head", "ahead_count", "behind_count"],
+      "checks": ["Fetch without merging.", "Review the local-versus-remote log and diff.", "Choose merge or rebase according to repository policy."],
+      "safe_fixes": ["Integrate reviewed remote work, resolve conflicts, rerun tests and the push guard, then push.", "Ask a maintainer before any force operation."],
+      "never_actions": ["Do not default to force push.", "Do not pull and execute unreviewed changes inside a privileged environment."],
+      "glossary_ids": ["git.worktree", "git.index"],
+      "source_ids": ["git-book"]
+    },
+    {
+      "id": "security.secret-detected",
+      "title": "A credential or secret may be in the outgoing content",
+      "level": "beginner",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "SECRET_DETECTED"},
+        {"kind": "git-message", "pattern": "push protection|repository rule violations.*secret"}
+      ],
+      "plain_cause": "A token, private key, password, or similar credential pattern was found before publication.",
+      "likely_causes": ["A local configuration file was staged.", "A token was pasted into code, a notebook, test fixture, log, or screenshot.", "A generated credential file was not excluded."],
+      "evidence": ["redacted_path", "line_number", "secret_type", "detector", "commit_scope"],
+      "checks": ["Do not display the value.", "Determine whether it is real and whether it reached any remote or shared backup.", "Inspect history, logs, artifacts, and forks within the exposure scope."],
+      "safe_fixes": ["Stop the push and remove the value from staged content.", "Rotate or revoke a real credential immediately.", "Use environment-based secret storage and add defense-in-depth ignore rules."],
+      "never_actions": ["Do not bypass because the repository is private.", "Do not paste the secret into an issue or report.", "Do not treat deletion alone as revocation."],
+      "glossary_ids": ["security.secret", "git.index", "git.ignore", "security.least-privilege"],
+      "source_ids": ["github-push-protection", "nist-ssdf"]
+    },
+    {
+      "id": "security.unfixed-advisory",
+      "title": "A dependency advisory has no known patched version",
+      "level": "advanced",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "NO_PATCH_AVAILABLE"},
+        {"kind": "api-field", "pattern": "first_patched_version.*null"}
+      ],
+      "plain_cause": "The advisory applies to a dependency, but the advisory data does not identify a release that removes the vulnerability.",
+      "likely_causes": ["The maintainer has not released a fix.", "The package is abandoned.", "The vulnerable component is transitive or optional.", "Advisory metadata is incomplete or newly published."],
+      "evidence": ["advisory_id", "package", "installed_version", "affected_range", "dependency_path", "runtime_reachability", "advisory_updated_at"],
+      "checks": ["Verify the exact dependency path and affected range.", "Assess whether the vulnerable feature is included and reachable.", "Look for an official fixed release, maintained replacement, or upstream mitigation."],
+      "safe_fixes": ["Remove, replace, isolate, or disable the affected component.", "Document a time-bounded risk acceptance with owner and evidence only when policy permits.", "Keep the push blocked when the release policy threshold is exceeded."],
+      "never_actions": ["Do not claim an automatic fix exists.", "Do not dismiss an alert solely to make the gate green.", "Do not silently upgrade to an untested fork."],
+      "glossary_ids": ["security.ghsa", "security.cve", "dependency.lockfile", "security.sbom"],
+      "source_ids": ["github-dependabot-api", "github-supply-chain", "nist-ssdf"]
+    },
+    {
+      "id": "checkpoint.untrusted-pickle",
+      "title": "Untrusted pickle checkpoint refused",
+      "level": "builder",
+      "severity": "blocking",
+      "triggers": [
+        {"kind": "diagnostic-code", "pattern": "UNTRUSTED_PICKLE|PICKLE_DISABLED"},
+        {"kind": "file-extension", "pattern": "\\.(pkl|pickle)$"}
+      ],
+      "plain_cause": "Pickle reconstructs Python objects and can execute attacker-controlled code while loading.",
+      "likely_causes": ["A model checkpoint came from an unknown source.", "An older tutorial serialized an entire model object.", "A file extension was renamed without changing its format."],
+      "evidence": ["redacted_path", "extension", "source_trust", "expected_format", "checksum_status"],
+      "checks": ["Do not import or inspect the object by unpickling it.", "Confirm provenance and format using non-executing metadata where possible.", "Ask the trusted producer to export named numeric arrays and validated JSON metadata."],
+      "safe_fixes": ["Use Daedalus NPZ plus JSON checkpoints with allow_pickle disabled.", "Validate checksum, schema, keys, shapes, and dtypes before loading arrays."],
+      "never_actions": ["Do not load the file to see what it contains.", "Do not rely on antivirus or a renamed extension as a safety boundary."],
+      "glossary_ids": ["persistence.checkpoint", "security.least-privilege"],
+      "source_ids": ["python-pickle", "numpy-savez", "nist-ssdf"]
+    }
+  ]
+}

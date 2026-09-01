@@ -1,0 +1,592 @@
+{
+  "schema_version": 1,
+  "resource_version": "2026.08",
+  "mode_order": ["plain", "math", "code", "diagnostic"],
+  "entries": [
+    {
+      "id": "math.scalar",
+      "term": "Scalar",
+      "aliases": ["single value"],
+      "levels": ["beginner"],
+      "topics": ["math", "arrays"],
+      "modes": {
+        "plain": "One numeric value, such as a temperature or a loss.",
+        "math": "A scalar is an element x of a number system such as the real numbers.",
+        "code": "x = np.array(3.5)  # shape ()",
+        "diagnostic": "A zero-dimensional array has shape (); distinguish it from a length-one vector with shape (1,)."
+      },
+      "related_ids": ["math.vector", "array.shape"],
+      "source_ids": ["mit-linear-algebra", "numpy-beginners"]
+    },
+    {
+      "id": "math.vector",
+      "term": "Vector",
+      "aliases": ["1-D array"],
+      "levels": ["beginner"],
+      "topics": ["math", "arrays"],
+      "modes": {
+        "plain": "An ordered list of values that can represent one sample, direction, or feature set.",
+        "math": "A vector x in R^n has n components and supports addition and scalar multiplication.",
+        "code": "x = np.array([1.0, 2.0, 3.0])  # shape (3,)",
+        "diagnostic": "A vector has one axis; transpose does not turn shape (n,) into (n, 1) without reshape."
+      },
+      "related_ids": ["math.scalar", "math.matrix", "array.axis"],
+      "source_ids": ["mit-linear-algebra", "numpy-beginners"]
+    },
+    {
+      "id": "math.matrix",
+      "term": "Matrix",
+      "aliases": ["2-D array"],
+      "levels": ["beginner"],
+      "topics": ["math", "linear-algebra"],
+      "modes": {
+        "plain": "A rectangular grid of values, often used for a batch of samples or a learned linear transform.",
+        "math": "A in R^(m x n) maps an n-component input to an m-component output through matrix multiplication.",
+        "code": "y = x @ weights + bias",
+        "diagnostic": "For A @ B, the inner dimensions must agree; inspect A.shape[-1] and B.shape[-2]."
+      },
+      "related_ids": ["math.vector", "array.tensor", "array.shape"],
+      "source_ids": ["mit-linear-algebra", "numpy-linalg"]
+    },
+    {
+      "id": "array.tensor",
+      "term": "Tensor",
+      "aliases": ["n-dimensional array", "ndarray"],
+      "levels": ["beginner", "builder"],
+      "topics": ["arrays", "autograd"],
+      "modes": {
+        "plain": "A value container with zero or more axes; in Daedalus it may also remember how it was computed.",
+        "math": "A tensor here means a multidimensional numeric array with shape (d_0, ..., d_k), not the full coordinate-free mathematical definition.",
+        "code": "x = Tensor(np.zeros((32, 10)), requires_grad=True)",
+        "diagnostic": "Always report value shape, gradient shape, dtype, and whether the tensor is connected to a computation graph."
+      },
+      "related_ids": ["array.axis", "array.shape", "autograd.graph"],
+      "source_ids": ["numpy-fundamentals", "paper-autodiff"]
+    },
+    {
+      "id": "array.axis",
+      "term": "Axis",
+      "aliases": ["dimension index"],
+      "levels": ["beginner"],
+      "topics": ["arrays"],
+      "modes": {
+        "plain": "One direction through an array, such as samples, features, rows, or columns.",
+        "math": "Axis i indexes dimension d_i in shape (d_0, d_1, ..., d_k).",
+        "code": "column_totals = x.sum(axis=0)",
+        "diagnostic": "An axis is valid only from -ndim through ndim-1; name the semantic role of each axis before reducing it."
+      },
+      "related_ids": ["array.shape", "array.broadcasting", "math.vector"],
+      "source_ids": ["numpy-beginners"]
+    },
+    {
+      "id": "array.shape",
+      "term": "Shape",
+      "aliases": ["dimensions"],
+      "levels": ["beginner"],
+      "topics": ["arrays", "calculators"],
+      "modes": {
+        "plain": "The length of every axis in an array.",
+        "math": "shape(X) = (d_0, ..., d_k), and the element count is the product of all d_i.",
+        "code": "batch, features = x.shape",
+        "diagnostic": "Print both operands' shapes and label their axes before changing code; reshaping can hide a modeling error."
+      },
+      "related_ids": ["array.axis", "array.broadcasting", "array.dtype"],
+      "source_ids": ["numpy-beginners", "numpy-fundamentals"]
+    },
+    {
+      "id": "array.dtype",
+      "term": "dtype",
+      "aliases": ["data type", "numeric type"],
+      "levels": ["beginner", "builder"],
+      "topics": ["arrays", "numerical-stability", "memory"],
+      "modes": {
+        "plain": "The storage format and precision used for every element in an array.",
+        "math": "A float32 element uses 4 bytes and has less precision and range than float64, which uses 8 bytes.",
+        "code": "x = np.asarray(values, dtype=np.float64)",
+        "diagnostic": "Unexpected integer arithmetic, overflow, or precision loss often begins with an unintended dtype conversion."
+      },
+      "related_ids": ["array.shape", "reproducibility.deterministic-run"],
+      "source_ids": ["numpy-dtypes"]
+    },
+    {
+      "id": "array.broadcasting",
+      "term": "Broadcasting",
+      "aliases": ["shape expansion"],
+      "levels": ["beginner", "builder"],
+      "topics": ["arrays", "autograd"],
+      "modes": {
+        "plain": "NumPy's rule for combining compatible shapes without manually copying the smaller input.",
+        "math": "Compare dimensions from the right; each pair is compatible when equal or when either value is 1.",
+        "code": "scores = x + bias  # (batch, features) + (features,)",
+        "diagnostic": "Right-align both shapes and mark the first pair that is neither equal nor 1; backward must sum gradients over expanded axes."
+      },
+      "related_ids": ["array.shape", "array.axis", "autograd.sum-to-shape"],
+      "source_ids": ["numpy-broadcasting"]
+    },
+    {
+      "id": "array.view",
+      "term": "View",
+      "aliases": ["shared-memory array"],
+      "levels": ["builder"],
+      "topics": ["arrays", "memory"],
+      "modes": {
+        "plain": "An array object that reuses another array's memory instead of owning an independent copy.",
+        "math": "A view changes indexing metadata while referring to the same underlying element storage.",
+        "code": "view = x[:, :2]; view[0, 0] = 0  # may change x",
+        "diagnostic": "Use np.shares_memory and inspect .base when an in-place edit unexpectedly changes another value."
+      },
+      "related_ids": ["array.shape", "array.dtype"],
+      "source_ids": ["numpy-fundamentals"]
+    },
+    {
+      "id": "math.gradient",
+      "term": "Gradient",
+      "aliases": ["derivative vector"],
+      "levels": ["builder"],
+      "topics": ["math", "autograd", "training"],
+      "modes": {
+        "plain": "The collection of loss sensitivities for every element of a value or parameter.",
+        "math": "For scalar loss L and vector x, grad_x L = [dL/dx_1, ..., dL/dx_n].",
+        "code": "parameter.data -= learning_rate * parameter.grad",
+        "diagnostic": "Check gradient shape, finiteness, norm, sign, and whether previous gradients were cleared or intentionally accumulated."
+      },
+      "related_ids": ["math.jacobian", "math.chain-rule", "autograd.gradient-buffering"],
+      "source_ids": ["mit-calculus", "paper-autodiff"]
+    },
+    {
+      "id": "math.jacobian",
+      "term": "Jacobian",
+      "aliases": ["derivative matrix"],
+      "levels": ["builder", "advanced"],
+      "topics": ["math", "autograd"],
+      "modes": {
+        "plain": "A table describing how every output changes with every input.",
+        "math": "For f: R^n -> R^m, J_ij = partial f_i / partial x_j.",
+        "code": "# Reverse mode computes vector-Jacobian products without materializing full J.",
+        "diagnostic": "If a local backward rule has the wrong orientation, compare its vector-Jacobian product against finite differences."
+      },
+      "related_ids": ["math.gradient", "math.chain-rule", "autograd.graph"],
+      "source_ids": ["paper-autodiff", "mit-calculus"]
+    },
+    {
+      "id": "math.chain-rule",
+      "term": "Chain rule",
+      "aliases": ["derivative composition"],
+      "levels": ["builder"],
+      "topics": ["math", "autograd"],
+      "modes": {
+        "plain": "A rule for passing sensitivity backward through a sequence of operations.",
+        "math": "If y=f(u) and u=g(x), then dy/dx = (dy/du)(du/dx).",
+        "code": "grad_x = grad_output * local_derivative",
+        "diagnostic": "Trace one path from loss to parameter and multiply local sensitivities in reverse execution order."
+      },
+      "related_ids": ["math.gradient", "math.jacobian", "autograd.graph"],
+      "source_ids": ["mit-calculus", "paper-backprop", "paper-autodiff"]
+    },
+    {
+      "id": "autograd.graph",
+      "term": "Computation graph",
+      "aliases": ["autograd graph", "tape"],
+      "levels": ["builder"],
+      "topics": ["autograd"],
+      "modes": {
+        "plain": "A record of which operations produced each value, used to compute gradients backward.",
+        "math": "Nodes hold values and operations; directed edges encode data dependencies for reverse accumulation.",
+        "code": "loss.backward()  # visits parents in reverse topological order",
+        "diagnostic": "A missing parent edge, detached value, or early graph release explains many absent-gradient failures."
+      },
+      "related_ids": ["math.chain-rule", "autograd.gradient-buffering", "array.tensor"],
+      "source_ids": ["paper-autodiff", "paper-backprop"]
+    },
+    {
+      "id": "autograd.gradient-buffering",
+      "term": "Gradient accumulation",
+      "aliases": ["gradient addition"],
+      "levels": ["builder"],
+      "topics": ["autograd", "training"],
+      "modes": {
+        "plain": "Adding every gradient contribution when one value affects the loss through more than one path or batch.",
+        "math": "If L depends on x through paths p, dL/dx is the sum over p of each path contribution.",
+        "code": "x.grad = contribution if x.grad is None else x.grad + contribution",
+        "diagnostic": "Too-small gradients may be overwritten instead of added; too-large gradients may be stale because zero_grad was omitted."
+      },
+      "related_ids": ["math.gradient", "autograd.graph", "autograd.sum-to-shape"],
+      "source_ids": ["paper-autodiff", "paper-backprop"]
+    },
+    {
+      "id": "autograd.sum-to-shape",
+      "term": "Broadcast gradient reduction",
+      "aliases": ["unbroadcast", "sum-to-shape"],
+      "levels": ["builder", "advanced"],
+      "topics": ["autograd", "arrays"],
+      "modes": {
+        "plain": "Summing an output gradient back over axes where an input was repeated by broadcasting.",
+        "math": "Reduce leading added axes and every original axis of length 1, then reshape to the input shape.",
+        "code": "grad_bias = grad_output.sum(axis=0)  # batch axis",
+        "diagnostic": "If bias.grad has batch shape instead of bias shape, the backward rule did not sum over expanded axes."
+      },
+      "related_ids": ["array.broadcasting", "autograd.gradient-buffering", "array.shape"],
+      "source_ids": ["numpy-broadcasting", "paper-autodiff"]
+    },
+    {
+      "id": "training.parameter",
+      "term": "Parameter",
+      "aliases": ["trainable weight"],
+      "levels": ["beginner", "builder"],
+      "topics": ["training", "neural-networks"],
+      "modes": {
+        "plain": "A model value changed by an optimizer during learning.",
+        "math": "Training searches parameter values theta that minimize objective L(theta).",
+        "code": "weight = Parameter(rng.normal(size=(inputs, outputs)))",
+        "diagnostic": "Confirm the parameter is registered once, receives a finite gradient of matching shape, and is not unintentionally frozen."
+      },
+      "related_ids": ["math.gradient", "training.learning-rate", "persistence.checkpoint"],
+      "source_ids": ["paper-backprop", "paper-adam"]
+    },
+    {
+      "id": "training.batch",
+      "term": "Batch",
+      "aliases": ["mini-batch"],
+      "levels": ["beginner"],
+      "topics": ["training", "data"],
+      "modes": {
+        "plain": "A group of samples processed together for one forward and backward calculation.",
+        "math": "A batch estimator averages or sums per-sample losses over B selected observations.",
+        "code": "for x_batch, y_batch in batches(x, y, size=32): ...",
+        "diagnostic": "Record whether the loss and gradients use sum or mean reduction because batch-size changes otherwise alter update magnitude."
+      },
+      "related_ids": ["training.epoch", "training.loss", "training.learning-rate"],
+      "source_ids": ["paper-adam", "paper-batchnorm"]
+    },
+    {
+      "id": "training.epoch",
+      "term": "Epoch",
+      "aliases": ["full data pass"],
+      "levels": ["beginner"],
+      "topics": ["training", "data"],
+      "modes": {
+        "plain": "One pass through every training sample.",
+        "math": "With N samples and batch size B, an epoch contains approximately ceil(N/B) optimizer steps.",
+        "code": "history = trainer.fit(x, y, epochs=100, batch_size=16)",
+        "diagnostic": "Compare runs by optimizer steps and processed examples as well as epochs when batch size differs."
+      },
+      "related_ids": ["training.batch", "training.loss"],
+      "source_ids": ["paper-adam"]
+    },
+    {
+      "id": "training.logit",
+      "term": "Logit",
+      "aliases": ["unnormalized score"],
+      "levels": ["builder"],
+      "topics": ["training", "classification"],
+      "modes": {
+        "plain": "A raw class score before conversion to probabilities.",
+        "math": "Softmax converts logits z into p_i = exp(z_i) / sum_j exp(z_j).",
+        "code": "logits = model(x); probabilities = stable_softmax(logits)",
+        "diagnostic": "Cross-entropy often expects logits, not already normalized probabilities; check the loss contract."
+      },
+      "related_ids": ["training.softmax", "training.loss"],
+      "source_ids": ["paper-backprop"]
+    },
+    {
+      "id": "training.softmax",
+      "term": "Softmax",
+      "aliases": ["normalized exponential"],
+      "levels": ["builder"],
+      "topics": ["training", "classification", "numerical-stability"],
+      "modes": {
+        "plain": "A function that turns class scores into nonnegative values that sum to one.",
+        "math": "Stable softmax uses exp(z_i - max(z)) divided by the sum of shifted exponentials.",
+        "code": "shifted = z - z.max(axis=-1, keepdims=True)",
+        "diagnostic": "NaN or Inf from exp(logits) usually means the maximum was not subtracted along the class axis."
+      },
+      "related_ids": ["training.logit", "training.loss", "array.axis"],
+      "source_ids": ["numpy-fundamentals", "paper-backprop"]
+    },
+    {
+      "id": "training.loss",
+      "term": "Loss",
+      "aliases": ["objective", "cost"],
+      "levels": ["beginner"],
+      "topics": ["training", "optimization"],
+      "modes": {
+        "plain": "A number measuring how wrong the model is for the current data and objective.",
+        "math": "Training seeks parameters theta that minimize L(theta); reductions define how sample losses become one scalar.",
+        "code": "loss = criterion(prediction, target); loss.backward()",
+        "diagnostic": "A falling training loss proves optimization progress, not generalization; also inspect validation metrics and leakage."
+      },
+      "related_ids": ["math.gradient", "training.learning-rate", "training.overfitting"],
+      "source_ids": ["paper-backprop", "paper-adam"]
+    },
+    {
+      "id": "training.learning-rate",
+      "term": "Learning rate",
+      "aliases": ["step size", "lr"],
+      "levels": ["beginner", "builder"],
+      "topics": ["training", "optimization"],
+      "modes": {
+        "plain": "A hyperparameter controlling how far an optimizer moves on each update.",
+        "math": "Basic gradient descent updates theta <- theta - eta grad L, where eta is the learning rate.",
+        "code": "optimizer = SGD(parameters, learning_rate=0.01)",
+        "diagnostic": "A rate that is too large can make loss oscillate or explode; too small can look flat despite correct gradients."
+      },
+      "related_ids": ["math.gradient", "training.loss", "training.parameter"],
+      "source_ids": ["paper-adam", "mit-calculus"]
+    },
+    {
+      "id": "training.overfitting",
+      "term": "Overfitting",
+      "aliases": ["poor generalization"],
+      "levels": ["beginner", "builder"],
+      "topics": ["training", "evaluation"],
+      "modes": {
+        "plain": "Learning details of the training set that do not transfer to new data.",
+        "math": "Training error continues downward while validation error stops improving or rises.",
+        "code": "best_epoch = np.argmin(validation_loss)",
+        "diagnostic": "Verify the split first, then compare train and validation curves before changing capacity or regularization."
+      },
+      "related_ids": ["training.data-leakage", "training.loss"],
+      "source_ids": ["paper-dropout", "mit-probability"]
+    },
+    {
+      "id": "training.data-leakage",
+      "term": "Data leakage",
+      "aliases": ["train-test contamination"],
+      "levels": ["beginner", "builder"],
+      "topics": ["training", "evaluation", "privacy"],
+      "modes": {
+        "plain": "Using information during training that would not be available for a genuine new prediction.",
+        "math": "Evaluation is biased when preprocessing statistics or labels from validation/test data influence fitted parameters.",
+        "code": "scaler.fit(x_train); x_test_scaled = scaler.transform(x_test)",
+        "diagnostic": "Trace when the split occurs and which subset each fitted transform, selection rule, or feature can observe."
+      },
+      "related_ids": ["training.overfitting", "reproducibility.deterministic-run"],
+      "source_ids": ["mit-probability", "nist-ai-rmf"]
+    },
+    {
+      "id": "transformer.attention",
+      "term": "Scaled dot-product attention",
+      "aliases": ["attention"],
+      "levels": ["advanced"],
+      "topics": ["transformer", "sequence-modeling"],
+      "modes": {
+        "plain": "A weighted lookup that lets each token combine information from selected tokens.",
+        "math": "Attention(Q,K,V) = softmax(QK^T / sqrt(d_k) + mask)V.",
+        "code": "weights = softmax((q @ k.swapaxes(-1, -2)) / np.sqrt(d_k) + mask)",
+        "diagnostic": "Check score shape, scaling, softmax axis, mask convention, row sums, and whether masked weights are exactly zero."
+      },
+      "related_ids": ["transformer.causal-mask", "training.softmax", "math.matrix"],
+      "source_ids": ["paper-transformer"]
+    },
+    {
+      "id": "transformer.causal-mask",
+      "term": "Causal mask",
+      "aliases": ["look-ahead mask"],
+      "levels": ["advanced"],
+      "topics": ["transformer", "sequence-modeling"],
+      "modes": {
+        "plain": "A rule preventing a token from using future tokens during next-token training or generation.",
+        "math": "Set attention logits above the main diagonal to negative infinity before softmax.",
+        "code": "mask = np.triu(np.full((n, n), -np.inf), k=1)",
+        "diagnostic": "Inspect the upper triangle and verify future-position probabilities are zero for every batch and head."
+      },
+      "related_ids": ["transformer.attention", "training.softmax"],
+      "source_ids": ["paper-transformer"]
+    },
+    {
+      "id": "persistence.checkpoint",
+      "term": "Checkpoint",
+      "aliases": ["saved model state"],
+      "levels": ["builder"],
+      "topics": ["serialization", "training", "recovery"],
+      "modes": {
+        "plain": "A saved snapshot of model parameters and enough metadata to identify and restore them.",
+        "math": "A checkpoint stores an ordered mapping from parameter identifiers to arrays with exact shapes and dtypes.",
+        "code": "np.savez_compressed(path, **named_arrays)",
+        "diagnostic": "Validate format version, checksum, key order, parameter count, shape, and dtype before copying data into a model."
+      },
+      "related_ids": ["training.parameter", "reproducibility.deterministic-run", "backup.snapshot"],
+      "source_ids": ["numpy-savez", "python-pickle"]
+    },
+    {
+      "id": "reproducibility.deterministic-run",
+      "term": "Deterministic run",
+      "aliases": ["reproducible run"],
+      "levels": ["builder", "advanced"],
+      "topics": ["reproducibility", "training"],
+      "modes": {
+        "plain": "A run that produces the expected same result when its recorded environment and inputs are repeated.",
+        "math": "Result = f(code, data, configuration, seed, dependency versions, platform behavior).",
+        "code": "rng = np.random.default_rng(seed); record_versions()",
+        "diagnostic": "A seed alone is insufficient; compare code hash, data hash, configuration, Python/NumPy versions, and operation order."
+      },
+      "related_ids": ["array.dtype", "training.data-leakage", "persistence.checkpoint", "dependency.lockfile"],
+      "source_ids": ["numpy-rng", "github-supply-chain"]
+    },
+    {
+      "id": "workspace.sandbox",
+      "term": "Constrained runner",
+      "aliases": ["learning sandbox", "code workshop runner"],
+      "levels": ["builder", "advanced"],
+      "topics": ["workspace", "security", "process"],
+      "modes": {
+        "plain": "A helper that limits ordinary learning-code mistakes with path, import, environment, output, and time controls.",
+        "math": "Policy constraints reduce reachable operations but do not create a kernel-level isolation boundary.",
+        "code": "subprocess.run(args, shell=False, timeout=limit, cwd=project)",
+        "diagnostic": "Treat hostile or unknown code as unsafe even when the runner reports that static checks passed; use a disposable VM."
+      },
+      "related_ids": ["security.least-privilege", "security.secret"],
+      "source_ids": ["python-subprocess", "nist-ssdf"]
+    },
+    {
+      "id": "git.worktree",
+      "term": "Working tree",
+      "aliases": ["worktree", "checked-out files"],
+      "levels": ["beginner"],
+      "topics": ["git"],
+      "modes": {
+        "plain": "The files currently checked out for you to edit.",
+        "math": "Git compares working-tree content with the staging index and the committed snapshot.",
+        "code": "git status --short  # inspect worktree and index",
+        "diagnostic": "Separate unstaged, staged, untracked, and ignored states before deciding what a push guard should inspect."
+      },
+      "related_ids": ["git.index", "git.ignore"],
+      "source_ids": ["git-book"]
+    },
+    {
+      "id": "git.index",
+      "term": "Git index",
+      "aliases": ["staging area", "staged snapshot"],
+      "levels": ["beginner", "builder"],
+      "topics": ["git", "release"],
+      "modes": {
+        "plain": "The proposed contents of the next commit.",
+        "math": "The index is a snapshot between the working tree and the current committed tree.",
+        "code": "git diff --cached --name-status",
+        "diagnostic": "A pre-commit scan should inspect the index; a pre-push scan must inspect the exact outgoing commit range."
+      },
+      "related_ids": ["git.worktree", "git.ignore", "security.secret"],
+      "source_ids": ["git-book", "git-hooks"]
+    },
+    {
+      "id": "git.ignore",
+      "term": ".gitignore",
+      "aliases": ["ignore rule"],
+      "levels": ["beginner", "builder"],
+      "topics": ["git", "privacy"],
+      "modes": {
+        "plain": "Patterns telling Git which untracked paths should normally stay out of status and staging.",
+        "math": "Ignore patterns filter untracked candidates; they do not remove a path already present in the index.",
+        "code": "git check-ignore -v -- path/to/file",
+        "diagnostic": "If a sensitive file remains staged or committed, first verify whether it is already tracked; adding a pattern is not retroactive."
+      },
+      "related_ids": ["git.worktree", "git.index", "security.secret"],
+      "source_ids": ["git-gitignore"]
+    },
+    {
+      "id": "dependency.lockfile",
+      "term": "Lockfile",
+      "aliases": ["resolved dependency file"],
+      "levels": ["builder"],
+      "topics": ["dependencies", "reproducibility", "security"],
+      "modes": {
+        "plain": "A recorded dependency resolution used to recreate a known environment.",
+        "math": "It maps direct constraints to one concrete set of direct and transitive package versions.",
+        "code": "# Commit the ecosystem's generated lockfile and audit changes in review.",
+        "diagnostic": "A manifest without a resolution may hide which transitive version is installed; compare both manifest and lockfile."
+      },
+      "related_ids": ["reproducibility.deterministic-run", "security.cve", "security.sbom"],
+      "source_ids": ["github-supply-chain", "pypa-packaging"]
+    },
+    {
+      "id": "security.cve",
+      "term": "CVE",
+      "aliases": ["Common Vulnerabilities and Exposures identifier"],
+      "levels": ["builder", "advanced"],
+      "topics": ["security", "dependencies"],
+      "modes": {
+        "plain": "A public identifier for a disclosed security vulnerability.",
+        "math": "A CVE identifies a record; severity and exploitability are separate, contextual measurements.",
+        "code": "# Record CVE, affected range, installed version, fixed version, and evidence.",
+        "diagnostic": "Do not decide from the identifier alone; verify that the vulnerable component and code path are actually present."
+      },
+      "related_ids": ["security.ghsa", "dependency.lockfile", "security.sbom"],
+      "source_ids": ["github-supply-chain", "nist-ssdf"]
+    },
+    {
+      "id": "security.ghsa",
+      "term": "GHSA",
+      "aliases": ["GitHub Security Advisory identifier"],
+      "levels": ["builder", "advanced"],
+      "topics": ["security", "github", "dependencies"],
+      "modes": {
+        "plain": "GitHub's identifier for an advisory used by dependency and security tooling.",
+        "math": "An alert joins an advisory's affected version range to a dependency found in a repository graph.",
+        "code": "GET /repos/{owner}/{repo}/dependabot/alerts",
+        "diagnostic": "Repository alerts are server-side data and require the correct repository, enabled features, authentication, and permissions."
+      },
+      "related_ids": ["security.cve", "dependency.lockfile", "security.sbom"],
+      "source_ids": ["github-dependabot-api", "github-supply-chain"]
+    },
+    {
+      "id": "security.sbom",
+      "term": "SBOM",
+      "aliases": ["software bill of materials"],
+      "levels": ["advanced"],
+      "topics": ["security", "dependencies", "release"],
+      "modes": {
+        "plain": "An inventory of components and versions included in a software build.",
+        "math": "An SBOM is a dependency graph plus identifiers and provenance metadata, not proof that every component is safe.",
+        "code": "# Generate SBOM from the resolved build and attach it to the matching release.",
+        "diagnostic": "Compare the SBOM to the built artifact and lockfile; stale inventories create false confidence."
+      },
+      "related_ids": ["dependency.lockfile", "security.cve", "security.ghsa"],
+      "source_ids": ["github-supply-chain", "nist-ssdf"]
+    },
+    {
+      "id": "security.secret",
+      "term": "Secret",
+      "aliases": ["credential", "token", "private key"],
+      "levels": ["beginner", "builder", "advanced"],
+      "topics": ["security", "privacy", "git"],
+      "modes": {
+        "plain": "Information that grants access and must not be placed in source, logs, screenshots, or public history.",
+        "math": "Exposure risk persists after deletion from the latest file because earlier Git objects and external copies may remain.",
+        "code": "token = os.environ['SERVICE_TOKEN']  # never print or commit it",
+        "diagnostic": "Redact the value, stop publication, rotate or revoke it, then assess history cleanup; hiding the file alone is not remediation."
+      },
+      "related_ids": ["git.ignore", "git.index", "security.least-privilege"],
+      "source_ids": ["github-push-protection", "nist-ssdf"]
+    },
+    {
+      "id": "security.least-privilege",
+      "term": "Least privilege",
+      "aliases": ["minimum permissions"],
+      "levels": ["builder", "advanced"],
+      "topics": ["security", "risk"],
+      "modes": {
+        "plain": "Give a process or credential only the access needed for its current task.",
+        "math": "Reduce the reachable resource set and permitted operation set to lower the impact of failure or compromise.",
+        "code": "# Use a read-only, repository-scoped token for an alert query.",
+        "diagnostic": "Inspect inherited environment, filesystem roots, network access, token scope, and write permissions before execution."
+      },
+      "related_ids": ["security.secret", "workspace.sandbox"],
+      "source_ids": ["nist-ssdf", "github-dependabot-api"]
+    },
+    {
+      "id": "backup.snapshot",
+      "term": "Backup snapshot",
+      "aliases": ["recovery copy"],
+      "levels": ["beginner", "builder"],
+      "topics": ["backup", "recovery"],
+      "modes": {
+        "plain": "A separate copy intended to recover data after deletion, corruption, or device loss.",
+        "math": "A verified backup pairs copied bytes with identity, time, source, destination, and integrity evidence.",
+        "code": "sha256_before == sha256_restored",
+        "diagnostic": "A successful copy log is not a restore test; restore to a new path and compare hashes before trusting the process."
+      },
+      "related_ids": ["persistence.checkpoint", "reproducibility.deterministic-run"],
+      "source_ids": ["nist-ssdf"]
+    }
+  ]
+}

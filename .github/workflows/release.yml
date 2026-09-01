@@ -1,0 +1,93 @@
+name: Source release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    permissions:
+      contents: read
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Confirm tag version and protected-branch ancestry
+        shell: pwsh
+        run: |
+          $version = (Select-String -LiteralPath pyproject.toml -Pattern '^version\s*=\s*"([^"]+)"$').Matches.Groups[1].Value
+          if ($env:GITHUB_REF_NAME -cne "v$version") {
+            throw "Release tag $env:GITHUB_REF_NAME does not match package version v$version."
+          }
+          git merge-base --is-ancestor HEAD origin/main
+          if ($LASTEXITCODE -ne 0) { throw 'Release tags must identify a commit reachable from main.' }
+      - name: Install release dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-dev.txt
+          python -m pip install --disable-pip-version-check 'cyclonedx-bom==7.3.1'
+          python -m pip install --disable-pip-version-check --no-deps -e .
+      - name: Verify release candidate
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python -m compileall -q src tests tools
+          python -m ruff check .
+          python -m pytest -q
+          python -m pip_audit -r requirements.txt --progress-spinner=off
+      - name: Build one-click source package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path release -Force | Out-Null
+          git archive --format=zip --output=release/Daedalus-AI-Suite-Windows.zip HEAD
+          $hash = (Get-FileHash release/Daedalus-AI-Suite-Windows.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  Daedalus-AI-Suite-Windows.zip" | Set-Content -Encoding ascii release/Daedalus-AI-Suite-Windows.zip.sha256
+          python -m pip freeze --all |
+            python -m cyclonedx_py requirements - --pyproject pyproject.toml --sv 1.7 --output-reproducible --of JSON -o release/Daedalus-AI-Suite-Windows.cdx.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: daedalus-source-release
+          path: release/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Attest and publish
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: daedalus-source-release
+          path: release
+      - name: Attest source archive provenance
+        uses: actions/attest-build-provenance@78e6cbd37d0ac1a40113c04f2037dacf1ea3f12e # v4.1.0
+        with:
+          subject-path: release/Daedalus-AI-Suite-Windows.zip
+      - name: Attest CycloneDX SBOM
+        uses: actions/attest-sbom@4651f806c01d8637787e274ac3bdf724ef169f34 # v3.0.0
+        with:
+          subject-path: release/Daedalus-AI-Suite-Windows.zip
+          sbom-path: release/Daedalus-AI-Suite-Windows.cdx.json
+      - name: Publish immutable release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release/* --generate-notes --verify-tag

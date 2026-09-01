@@ -1,0 +1,844 @@
+{
+  "schema_version": 1,
+  "resource_version": "2026.08",
+  "levels": ["beginner", "builder", "advanced", "capstone"],
+  "core_constraint": "Required engine labs use Python standard-library facilities and NumPy array primitives. High-level ML frameworks may appear only in optional comparison work after the from-scratch checkpoint passes.",
+  "completion_policy": "A module completes only when its artifact, automated checks, explanation, and safety gates pass. Reading or video completion alone is never sufficient.",
+  "tracks": [
+    {
+      "id": "track.launch-pad",
+      "title": "Launch Pad: Python, Workspaces, and Git",
+      "level": "beginner",
+      "summary": "Build the programming and version-control habits needed to work safely inside Daedalus.",
+      "prerequisite_track_ids": [],
+      "capstone_recipe_id": "recipe.shape-detective",
+      "modules": [
+        {
+          "id": "module.python-workbench",
+          "title": "Python Workbench",
+          "summary": "Use functions, data structures, exceptions, paths, isolated environments, and tests to build a small engineering tool.",
+          "objectives": [
+            "Read and write small Python modules with explicit functions and a main entry point.",
+            "Create an isolated environment and explain why it protects unrelated projects.",
+            "Use pathlib without string-built paths and report actionable exceptions.",
+            "Write deterministic unit tests for normal, edge, and failure cases."
+          ],
+          "lab": {
+            "title": "CLI engineering calculator",
+            "instructions": [
+              "Accept two numeric values and a named operation.",
+              "Separate parsing, calculation, and presentation functions.",
+              "Reject invalid numbers and unsupported operations with a short explanation.",
+              "Test success, zero, negative, and invalid-input cases."
+            ],
+            "deliverable": "A tested Python module that can run from a fresh isolated environment.",
+            "recipe_id": null
+          },
+          "checkpoint": {
+            "id": "checkpoint.python-workbench",
+            "required_score": 1.0,
+            "checks": [
+              "Fresh environment imports the module without global packages.",
+              "Automated test discovery passes.",
+              "Invalid input exits nonzero without a traceback dump to a beginner.",
+              "No file operation escapes its supplied temporary directory."
+            ]
+          },
+          "source_ids": ["python-tutorial", "python-venv", "python-unittest", "python-pathlib"],
+          "glossary_ids": ["math.scalar", "array.shape", "workspace.sandbox"],
+          "error_card_ids": ["workspace.path-boundary"]
+        },
+        {
+          "id": "module.git-safe-basics",
+          "title": "Git Without Accidental Publication",
+          "summary": "Understand the working tree, staging index, commits, branches, remotes, and ignore limits before automating a push.",
+          "objectives": [
+            "Distinguish working-tree, staged, committed, ignored, and untracked content.",
+            "Create a focused branch, inspect a staged diff, commit, and merge it.",
+            "Explain why .gitignore does not remove already tracked files.",
+            "Resolve a remote-ahead situation without defaulting to force push."
+          ],
+          "lab": {
+            "title": "Publication-state fixture",
+            "instructions": [
+              "Create a disposable repository with public source and a fake private output.",
+              "Observe the path before and after an ignore rule.",
+              "Stage it deliberately, add the rule, and prove it remains tracked.",
+              "Remove it from the proposed commit while preserving the working copy."
+            ],
+            "deliverable": "A command transcript explaining each Git state and the non-destructive remediation.",
+            "recipe_id": null
+          },
+          "checkpoint": {
+            "id": "checkpoint.git-safe-basics",
+            "required_score": 1.0,
+            "checks": [
+              "Learner identifies the exact staged snapshot before committing.",
+              "Tracked-versus-ignored behavior is demonstrated correctly.",
+              "A branch and merge preserve both intended changes.",
+              "No force-push command is used in the conflict exercise."
+            ]
+          },
+          "source_ids": ["git-book", "git-gitignore", "git-hooks"],
+          "glossary_ids": ["git.worktree", "git.index", "git.ignore", "security.secret"],
+          "error_card_ids": ["git.ignored-but-tracked", "git.push-conflict", "security.secret-detected"]
+        }
+      ]
+    },
+    {
+      "id": "track.math-forge",
+      "title": "Math Forge: The Mathematics Used by Learning Systems",
+      "level": "beginner",
+      "summary": "Connect geometry, derivatives, probability, and floating-point behavior to code and diagnostics.",
+      "prerequisite_track_ids": ["track.launch-pad"],
+      "capstone_recipe_id": "recipe.derivative-detective",
+      "modules": [
+        {
+          "id": "module.linear-algebra",
+          "title": "Vectors, Matrices, and Linear Transforms",
+          "summary": "Model features, batches, and learned affine layers with explicit shapes and linear algebra.",
+          "objectives": [
+            "Compute dot products, matrix products, transposes, norms, and affine transforms by hand for small cases.",
+            "Interpret rows, columns, samples, features, inputs, and outputs consistently.",
+            "Use least squares as a reference solution for linear regression.",
+            "Predict the output shape of vector, matrix, and batched matrix products."
+          ],
+          "lab": {
+            "title": "Affine transformation explorer",
+            "instructions": [
+              "Represent three two-feature samples as a matrix.",
+              "Apply a hand-selected weight matrix and bias.",
+              "Calculate one output manually and compare every output with NumPy.",
+              "Change one shape incorrectly and explain the resulting contract failure."
+            ],
+            "deliverable": "A shape-annotated calculation with manual and NumPy results.",
+            "recipe_id": "recipe.shape-detective"
+          },
+          "checkpoint": {
+            "id": "checkpoint.linear-algebra",
+            "required_score": 1.0,
+            "checks": [
+              "Manual products agree with NumPy within 1e-12 in float64.",
+              "Every axis has a written semantic label.",
+              "Least-squares oracle is used without computing an explicit matrix inverse.",
+              "Incompatible inner dimensions are explained before execution."
+            ]
+          },
+          "source_ids": ["mit-linear-algebra", "numpy-linalg"],
+          "glossary_ids": ["math.scalar", "math.vector", "math.matrix", "array.shape"],
+          "error_card_ids": ["numpy.matmul-core-mismatch"]
+        },
+        {
+          "id": "module.calculus-probability",
+          "title": "Derivatives, Chain Rule, and Uncertainty",
+          "summary": "Develop the derivative and probability concepts needed for loss optimization and honest evaluation.",
+          "objectives": [
+            "Interpret a derivative as local sensitivity and calculate common derivative rules.",
+            "Compose sensitivities with the chain rule.",
+            "Explain gradient and Jacobian roles without materializing unnecessary full Jacobians.",
+            "Use random variables, mean, variance, and sampling to describe experiment uncertainty."
+          ],
+          "lab": {
+            "title": "Finite-difference sensitivity lab",
+            "instructions": [
+              "Choose a smooth composed scalar function.",
+              "Derive its gradient using local rules and the chain rule.",
+              "Compute centered finite differences across several epsilon values.",
+              "Repeat a seeded noisy estimate and summarize mean and variance."
+            ],
+            "deliverable": "A derivative comparison table and a short uncertainty explanation.",
+            "recipe_id": "recipe.derivative-detective"
+          },
+          "checkpoint": {
+            "id": "checkpoint.calculus-probability",
+            "required_score": 1.0,
+            "checks": [
+              "Centered finite-difference relative error is below 1e-6 for smooth fixtures.",
+              "Chain-rule factor order and shapes are correct.",
+              "Random experiment records seed, sample count, mean, and variance.",
+              "Learner distinguishes observed sample variation from a deterministic implementation bug."
+            ]
+          },
+          "source_ids": ["mit-calculus", "mit-probability", "paper-autodiff"],
+          "glossary_ids": ["math.gradient", "math.jacobian", "math.chain-rule", "reproducibility.deterministic-run"],
+          "error_card_ids": ["numeric.nonfinite"]
+        },
+        {
+          "id": "module.numerical-stability",
+          "title": "Floating-Point Range and Stable Formulas",
+          "summary": "Recognize overflow, underflow, cancellation, invalid domains, and dtype-dependent behavior.",
+          "objectives": [
+            "Explain how dtype changes precision, range, and memory.",
+            "Locate the first non-finite operation with finite-value summaries.",
+            "Implement stable softmax and stable log-loss calculations.",
+            "Choose tolerances that match the dtype and operation scale."
+          ],
+          "lab": {
+            "title": "Extreme-logit laboratory",
+            "instructions": [
+              "Evaluate naive exponential normalization at increasing scales.",
+              "Record where overflow first appears for float32 and float64.",
+              "Implement maximum-shifted softmax along a named class axis.",
+              "Verify finite outputs and row sums for logits [-1000, 0, 1000]."
+            ],
+            "deliverable": "A stable softmax implementation and diagnostic trace for the naive failure.",
+            "recipe_id": null
+          },
+          "checkpoint": {
+            "id": "checkpoint.numerical-stability",
+            "required_score": 1.0,
+            "checks": [
+              "Extreme-logit outputs are finite and sum to one within 1e-12 in float64.",
+              "Maximum is reduced along the documented class axis with keepdims.",
+              "Invalid log and divide domains raise or report a typed cause.",
+              "No global warning suppression or NaN-to-zero masking is used."
+            ]
+          },
+          "source_ids": ["numpy-dtypes", "numpy-fundamentals"],
+          "glossary_ids": ["array.dtype", "training.logit", "training.softmax"],
+          "error_card_ids": ["numeric.nonfinite", "numeric.unstable-softmax"]
+        }
+      ]
+    },
+    {
+      "id": "track.array-lab",
+      "title": "Array Lab: NumPy Tensor Mechanics",
+      "level": "beginner",
+      "summary": "Master array shape, dtype, memory, vectorization, broadcasting, and reproducible random generation.",
+      "prerequisite_track_ids": ["track.launch-pad"],
+      "capstone_recipe_id": "recipe.shape-detective",
+      "modules": [
+        {
+          "id": "module.numpy-arrays",
+          "title": "Arrays, Axes, Dtypes, Views, and Broadcasting",
+          "summary": "Replace accidental loops and trial reshapes with explicit array contracts.",
+          "objectives": [
+            "Create, index, reshape, transpose, aggregate, and vectorize arrays intentionally.",
+            "Distinguish a view from an independent copy.",
+            "Predict broadcasting compatibility by trailing-axis comparison.",
+            "Select and preserve a suitable numeric dtype."
+          ],
+          "lab": {
+            "title": "Loop-to-array translation",
+            "instructions": [
+              "Implement a small feature normalization with explicit loops as an oracle.",
+              "Translate it to vectorized NumPy operations.",
+              "Test view/copy behavior with shares_memory.",
+              "Add compatible and incompatible broadcast fixtures."
+            ],
+            "deliverable": "A tested vectorized implementation with a shape contract table.",
+            "recipe_id": "recipe.shape-detective"
+          },
+          "checkpoint": {
+            "id": "checkpoint.numpy-arrays",
+            "required_score": 1.0,
+            "checks": [
+              "Loop oracle and vectorized result agree with rtol 1e-7 and atol 1e-9 in float64.",
+              "View mutation behavior is predicted and tested.",
+              "Broadcast fixtures name expanded axes.",
+              "No flatten-or-tile workaround hides an incompatible model shape."
+            ]
+          },
+          "source_ids": ["numpy-beginners", "numpy-fundamentals", "numpy-broadcasting", "numpy-dtypes"],
+          "glossary_ids": ["array.tensor", "array.axis", "array.shape", "array.dtype", "array.broadcasting", "array.view"],
+          "error_card_ids": ["numpy.broadcast-mismatch", "numpy.matmul-core-mismatch"]
+        },
+        {
+          "id": "module.shape-memory",
+          "title": "Shape, Parameter, and Memory Calculators",
+          "summary": "Calculate model dimensions and memory before allocating arrays or starting a run.",
+          "objectives": [
+            "Compute element counts and bytes from shape and dtype.",
+            "Count dense-layer weights and biases exactly.",
+            "Separate parameter, gradient, optimizer-state, and activation memory.",
+            "Record explicit RNG objects and environment versions for reproducibility."
+          ],
+          "lab": {
+            "title": "Architecture preflight",
+            "instructions": [
+              "Describe a three-layer dense network and a batch shape.",
+              "Calculate parameter and activation elements by component.",
+              "Apply dtype item size and selected optimizer-state multipliers.",
+              "Allocate controlled arrays and compare estimates with nbytes."
+            ],
+            "deliverable": "An itemized preflight report with assumptions and exact controlled-case verification.",
+            "recipe_id": "recipe.shape-detective"
+          },
+          "checkpoint": {
+            "id": "checkpoint.shape-memory",
+            "required_score": 1.0,
+            "checks": [
+              "Parameter count matches the actual model registry exactly.",
+              "Controlled allocation byte estimate equals summed ndarray.nbytes.",
+              "Transient and implementation overhead are labeled rather than promised exact.",
+              "Run record includes seed plus Python and NumPy versions."
+            ]
+          },
+          "source_ids": ["numpy-dtypes", "numpy-rng", "numpy-fundamentals"],
+          "glossary_ids": ["array.shape", "array.dtype", "training.parameter", "reproducibility.deterministic-run"],
+          "error_card_ids": ["numeric.nonfinite"]
+        }
+      ]
+    },
+    {
+      "id": "track.learning-fundamentals",
+      "title": "Learning Fundamentals: Models Before Networks",
+      "level": "builder",
+      "summary": "Build regression and classification from equations while keeping evaluation honest.",
+      "prerequisite_track_ids": ["track.math-forge", "track.array-lab"],
+      "capstone_recipe_id": "recipe.first-learner",
+      "modules": [
+        {
+          "id": "module.data-evaluation",
+          "title": "Data Splits, Scaling, Metrics, and Leakage",
+          "summary": "Design experiments whose reported performance answers the intended question.",
+          "objectives": [
+            "Separate training, validation, and test roles.",
+            "Fit preprocessing statistics on training data only.",
+            "Choose metrics that match regression or classification behavior.",
+            "Detect leakage, overfitting, and misleading aggregate results."
+          ],
+          "lab": {
+            "title": "Leakage demonstration",
+            "instructions": [
+              "Create a fixed synthetic dataset and split before fitting any transform.",
+              "Compare a correct training-only scaler with an intentionally leaky scaler.",
+              "Train the same simple model under both conditions.",
+              "Explain why the leaky result is not admissible evidence."
+            ],
+            "deliverable": "A split manifest, metric report, and leakage audit.",
+            "recipe_id": "recipe.first-learner"
+          },
+          "checkpoint": {
+            "id": "checkpoint.data-evaluation",
+            "required_score": 1.0,
+            "checks": [
+              "Split occurs before fitted preprocessing.",
+              "Data hashes or stable identifiers record which samples belong to each split.",
+              "Test set is not used for hyperparameter selection.",
+              "Training and validation curves are interpreted separately."
+            ]
+          },
+          "source_ids": ["mit-probability", "nist-ai-rmf", "dvc-start", "huggingface-model-cards"],
+          "glossary_ids": ["training.data-leakage", "training.overfitting", "training.loss", "reproducibility.deterministic-run"],
+          "error_card_ids": ["training.diverging-loss"]
+        },
+        {
+          "id": "module.linear-logistic",
+          "title": "Linear and Logistic Learners",
+          "summary": "Implement supervised prediction, loss, analytical gradients, and optimization without an ML framework.",
+          "objectives": [
+            "Implement linear regression with mean-squared error.",
+            "Implement binary logistic prediction and a stable classification loss.",
+            "Derive parameter gradients and verify them numerically.",
+            "Compare a learned linear solution to a trustworthy NumPy oracle."
+          ],
+          "lab": {
+            "title": "First Learner",
+            "instructions": [
+              "Fit seeded y = 3x + 2 + noise data.",
+              "Record the loss and parameter trajectory.",
+              "Compare gradients to centered finite differences.",
+              "Compare final parameters with least squares."
+            ],
+            "deliverable": "A reproducible regression report and a tested binary classifier.",
+            "recipe_id": "recipe.first-learner"
+          },
+          "checkpoint": {
+            "id": "checkpoint.linear-logistic",
+            "required_score": 1.0,
+            "checks": [
+              "Analytical gradients have relative error below 1e-6 on fixed fixtures.",
+              "Regression recovers known parameters within declared noise-aware tolerance.",
+              "Classifier reaches at least 95 percent on a deliberately separable fixed set.",
+              "Stable loss remains finite for extreme logits."
+            ]
+          },
+          "source_ids": ["mit-linear-algebra", "mit-calculus", "mit-probability", "numpy-linalg"],
+          "glossary_ids": ["training.logit", "training.softmax", "training.loss", "training.learning-rate"],
+          "error_card_ids": ["numeric.unstable-softmax", "training.diverging-loss"]
+        }
+      ]
+    },
+    {
+      "id": "track.autograd-foundry",
+      "title": "Autograd Foundry: Reverse-Mode Differentiation",
+      "level": "builder",
+      "summary": "Build the graph and backward engine that make every neural-network primitive inspectable.",
+      "prerequisite_track_ids": ["track.math-forge", "track.array-lab"],
+      "capstone_recipe_id": "recipe.derivative-detective",
+      "modules": [
+        {
+          "id": "module.scalar-tape",
+          "title": "Scalar Computation Tape",
+          "summary": "Learn reverse accumulation on a minimal graph before adding array shape complexity.",
+          "objectives": [
+            "Record operation parents and local backward rules.",
+            "Produce a reverse topological traversal.",
+            "Accumulate contributions at graph branches.",
+            "Define gradient reset, detach, and repeated-backward behavior."
+          ],
+          "lab": {
+            "title": "Derivative Detective scalar graph",
+            "instructions": [
+              "Implement scalar add, multiply, power, exp, log, and ReLU nodes.",
+              "Seed a scalar output gradient and walk the graph backward.",
+              "Trace x*x + x to prove branch accumulation.",
+              "Compare each leaf gradient with centered finite differences."
+            ],
+            "deliverable": "A scalar autograd module, graph trace, and gradient-check suite.",
+            "recipe_id": "recipe.derivative-detective"
+          },
+          "checkpoint": {
+            "id": "checkpoint.scalar-tape",
+            "required_score": 1.0,
+            "checks": [
+              "Each reachable node is visited after its consumers.",
+              "Branch contributions are summed exactly once.",
+              "Smooth gradient relative error is below 1e-6 in float64.",
+              "Invalid domains and graph lifecycle violations are typed."
+            ]
+          },
+          "source_ids": ["paper-autodiff", "paper-backprop", "mit-calculus"],
+          "glossary_ids": ["autograd.graph", "math.chain-rule", "math.gradient", "autograd.gradient-buffering"],
+          "error_card_ids": ["autograd.gradient-accumulation", "numeric.nonfinite"]
+        },
+        {
+          "id": "module.tensor-autograd",
+          "title": "NumPy Tensor Autograd",
+          "summary": "Extend reverse mode to shaped arrays, reductions, matrix products, and broadcasting.",
+          "objectives": [
+            "Implement array-valued add, subtract, multiply, divide, power, reshape, transpose, sum, mean, matmul, and ReLU.",
+            "Propagate vector-Jacobian products without materializing full Jacobians.",
+            "Reduce broadcast gradients exactly to each input shape.",
+            "Gradient-check scalar, elementwise, reduction, and matrix operations."
+          ],
+          "lab": {
+            "title": "Tensor primitive matrix",
+            "instructions": [
+              "Create fixtures spanning scalar, vector, matrix, and batched shapes.",
+              "Test every forward result against direct NumPy.",
+              "Test every backward result with centered finite differences.",
+              "Include bias broadcasting and multiple-path graphs."
+            ],
+            "deliverable": "A Tensor API with a parameterized primitive and gradient-check suite.",
+            "recipe_id": "recipe.xor-ladder"
+          },
+          "checkpoint": {
+            "id": "checkpoint.tensor-autograd",
+            "required_score": 1.0,
+            "checks": [
+              "Relative gradient error is below 1e-5 across required operations.",
+              "Every stored gradient exactly matches its tensor shape.",
+              "Bias and multi-axis broadcast gradients use sum-to-shape semantics.",
+              "No object dtype or implicit arbitrary-code serialization enters the engine."
+            ]
+          },
+          "source_ids": ["paper-autodiff", "numpy-broadcasting", "numpy-linalg"],
+          "glossary_ids": ["array.tensor", "math.jacobian", "autograd.sum-to-shape", "autograd.gradient-buffering"],
+          "error_card_ids": ["autograd.broadcast-reduction", "autograd.gradient-accumulation", "numpy.matmul-core-mismatch"]
+        }
+      ]
+    },
+    {
+      "id": "track.neural-workshop",
+      "title": "Neural Workshop: Layers, Losses, and Training",
+      "level": "builder",
+      "summary": "Assemble tested primitives into reusable models, optimizers, training loops, diagnostics, and checkpoints.",
+      "prerequisite_track_ids": ["track.learning-fundamentals", "track.autograd-foundry"],
+      "capstone_recipe_id": "recipe.xor-ladder",
+      "modules": [
+        {
+          "id": "module.layers-losses",
+          "title": "Modules, Parameters, Activations, and Losses",
+          "summary": "Create composable trainable layers with explicit state and stable objectives.",
+          "objectives": [
+            "Register each trainable parameter exactly once.",
+            "Implement Linear, ReLU, sigmoid, tanh, and stable softmax behavior.",
+            "Implement MSE and cross-entropy with documented reduction semantics.",
+            "Verify forward shape and backward gradient contracts per layer."
+          ],
+          "lab": {
+            "title": "Layer assembly bench",
+            "instructions": [
+              "Build Linear-ReLU-Linear as a sequential model.",
+              "List parameters, shapes, dtypes, and exact counts.",
+              "Run a fixed batch through each activation and loss.",
+              "Gradient-check every trainable layer and objective."
+            ],
+            "deliverable": "A composable model and layer contract report.",
+            "recipe_id": "recipe.xor-ladder"
+          },
+          "checkpoint": {
+            "id": "checkpoint.layers-losses",
+            "required_score": 1.0,
+            "checks": [
+              "Parameter registry has no duplicates or missing trainable arrays.",
+              "Forward output shapes match declared contracts.",
+              "Stable cross-entropy remains finite for extreme logits.",
+              "Layer and loss gradient relative error is below 1e-5."
+            ]
+          },
+          "source_ids": ["paper-backprop", "paper-glorot", "numpy-linalg"],
+          "glossary_ids": ["training.parameter", "training.logit", "training.softmax", "training.loss"],
+          "error_card_ids": ["numeric.unstable-softmax", "autograd.broadcast-reduction"]
+        },
+        {
+          "id": "module.optimizers-training",
+          "title": "Optimizers, Mini-Batches, and Trainer State",
+          "summary": "Turn gradients into controlled, reproducible parameter updates.",
+          "objectives": [
+            "Implement SGD, Momentum, and Adam from their update equations.",
+            "Define zeroing, accumulation, optimizer-step, and train/eval order.",
+            "Shuffle and batch data through an explicit Generator.",
+            "Record configuration, versions, metrics, and stop reason for every run."
+          ],
+          "lab": {
+            "title": "XOR optimizer ladder",
+            "instructions": [
+              "Preserve a one-linear-layer XOR failure as a baseline.",
+              "Train a hidden-layer model with SGD.",
+              "Hand-calculate one Momentum and Adam update and compare code.",
+              "Run the fixed-seed experiment and record metrics."
+            ],
+            "deliverable": "An optimizer equation test suite and deterministic XOR run.",
+            "recipe_id": "recipe.xor-ladder"
+          },
+          "checkpoint": {
+            "id": "checkpoint.optimizers-training",
+            "required_score": 1.0,
+            "checks": [
+              "One-step optimizer fixtures match hand-computed values.",
+              "Bias correction and state initialization are verified for Adam.",
+              "Fixed-seed multilayer model classifies all four XOR inputs.",
+              "Run metadata contains seed, versions, data identity, and complete hyperparameters."
+            ]
+          },
+          "source_ids": ["paper-adam", "paper-glorot", "numpy-rng", "pytorch-reproducibility", "huggingface-trainer", "hydra-introduction", "mlflow-tracking"],
+          "glossary_ids": ["training.batch", "training.epoch", "training.learning-rate", "reproducibility.deterministic-run"],
+          "error_card_ids": ["training.diverging-loss", "autograd.gradient-accumulation"]
+        },
+        {
+          "id": "module.diagnostics-checkpoints",
+          "title": "Gradient Health and Safe Checkpoints",
+          "summary": "Observe failures early and persist numeric state without executable object formats.",
+          "objectives": [
+            "Track loss, parameter norms, gradient norms, non-finite counts, latency, and throughput.",
+            "Distinguish an optimization symptom from an incorrect derivative.",
+            "Save named arrays with validated JSON metadata and checksums.",
+            "Reject object arrays, shape mismatch, tampering, and untrusted pickle."
+          ],
+          "lab": {
+            "title": "Fault injection and checkpoint round-trip",
+            "instructions": [
+              "Inject an excessive learning rate and locate the first unhealthy signal.",
+              "Restore the correct rate and overfit a fixed 32-example sanity batch.",
+              "Save arrays and metadata, then reload into a fresh matching model.",
+              "Modify the archive and verify checksum rejection."
+            ],
+            "deliverable": "A diagnostic timeline and tamper-detecting checkpoint fixture.",
+            "recipe_id": "recipe.xor-ladder"
+          },
+          "checkpoint": {
+            "id": "checkpoint.diagnostics-checkpoints",
+            "required_score": 1.0,
+            "checks": [
+              "First non-finite operation is reported with redacted numeric evidence.",
+              "Sanity batch reaches the declared overfit target before larger training.",
+              "Checkpoint arrays round-trip with np.array_equal.",
+              "allow_pickle is false and tampered archives fail closed."
+            ]
+          },
+          "source_ids": ["numpy-savez", "python-pickle", "paper-glorot"],
+          "glossary_ids": ["persistence.checkpoint", "math.gradient", "training.loss", "reproducibility.deterministic-run"],
+          "error_card_ids": ["numeric.nonfinite", "training.diverging-loss", "checkpoint.untrusted-pickle"]
+        }
+      ]
+    },
+    {
+      "id": "track.deep-architecture",
+      "title": "Deep Architecture Lab",
+      "level": "advanced",
+      "summary": "Implement convolution, normalization, dropout, attention, and transformer blocks from inspectable primitives.",
+      "prerequisite_track_ids": ["track.neural-workshop"],
+      "capstone_recipe_id": "recipe.tiny-transformer",
+      "modules": [
+        {
+          "id": "module.convolution-normalization",
+          "title": "Convolution, Normalization, and Dropout",
+          "summary": "Add spatial parameter sharing and stateful train/eval operations without hiding shape or gradient logic.",
+          "objectives": [
+            "Implement a slow, clear convolution oracle and a vectorized equivalent.",
+            "Derive input, kernel, and bias gradients.",
+            "Implement normalization with explicit training and evaluation state.",
+            "Implement inverted dropout using an explicit random Generator."
+          ],
+          "lab": {
+            "title": "Signal-kernel laboratory",
+            "instructions": [
+              "Convolve a small one-dimensional signal by hand and with a loop oracle.",
+              "Implement the vectorized forward path.",
+              "Gradient-check input, kernel, and bias.",
+              "Verify normalization and dropout state differences."
+            ],
+            "deliverable": "Tested convolution, normalization, and dropout primitives with state documentation.",
+            "recipe_id": null
+          },
+          "checkpoint": {
+            "id": "checkpoint.convolution-normalization",
+            "required_score": 1.0,
+            "checks": [
+              "Vectorized convolution output matches the loop oracle.",
+              "All convolution gradients pass below 1e-5 relative error.",
+              "Evaluation normalization uses recorded statistics rather than the current batch.",
+              "Dropout is disabled in evaluation and reproducible with recorded training RNG state."
+            ]
+          },
+          "source_ids": ["paper-glorot", "paper-batchnorm", "paper-dropout", "numpy-rng"],
+          "glossary_ids": ["array.tensor", "training.parameter", "training.batch", "reproducibility.deterministic-run"],
+          "error_card_ids": ["autograd.broadcast-reduction", "numeric.nonfinite"]
+        },
+        {
+          "id": "module.attention-transformer",
+          "title": "Attention and a Tiny Transformer",
+          "summary": "Build the core sequence-modeling block and inspect its masking, probabilities, gradients, and memory.",
+          "objectives": [
+            "Implement embeddings, scaled dot-product attention, and causal masking.",
+            "Explain query, key, value, sequence, head, and feature axes.",
+            "Assemble residual, normalization, and feed-forward paths.",
+            "Measure attention memory growth with sequence length."
+          ],
+          "lab": {
+            "title": "One-block character transformer",
+            "instructions": [
+              "Create a deterministic character vocabulary and next-token batches.",
+              "Implement one attention head and its causal mask.",
+              "Add the feed-forward and residual block.",
+              "Overfit one batch before training a small local corpus."
+            ],
+            "deliverable": "A tiny character transformer with attention inspection and deterministic generation.",
+            "recipe_id": "recipe.tiny-transformer"
+          },
+          "checkpoint": {
+            "id": "checkpoint.attention-transformer",
+            "required_score": 1.0,
+            "checks": [
+              "Attention rows are finite and sum to one.",
+              "Every future-token probability is zero under the causal mask.",
+              "Primitive gradients pass targeted finite-difference checks.",
+              "Fixed-corpus loss falls at least 50 percent and the recorded run can be replayed."
+            ]
+          },
+          "source_ids": ["paper-transformer", "paper-autodiff", "paper-adam"],
+          "glossary_ids": ["transformer.attention", "transformer.causal-mask", "training.softmax", "array.axis"],
+          "error_card_ids": ["numeric.unstable-softmax", "numpy.matmul-core-mismatch", "training.diverging-loss"]
+        }
+      ]
+    },
+    {
+      "id": "track.systems-lab",
+      "title": "Daedalus Systems Lab: Operator Workflows",
+      "level": "builder",
+      "summary": "Turn educational primitives into a local-first workbench with strict private-data boundaries and recoverable state.",
+      "prerequisite_track_ids": ["track.launch-pad", "track.array-lab"],
+      "capstone_recipe_id": "recipe.push-guardian-restore",
+      "modules": [
+        {
+          "id": "module.workspace-runner",
+          "title": "Private Workspaces and the Constrained Runner",
+          "summary": "Keep learner projects separate from public source and run ordinary learning code with bounded process controls.",
+          "objectives": [
+            "Resolve and validate paths beneath a marked private workspace.",
+            "Reject traversal, wrong roots, symlink escapes, and unsupported file types.",
+            "Run Python with bounded time, output, working directory, and a minimal environment.",
+            "Explain why these controls are not a hostile-code sandbox."
+          ],
+          "lab": {
+            "title": "Boundary and timeout exercise",
+            "instructions": [
+              "Create a marked temporary workspace outside a temporary source tree.",
+              "Run a small Python file within the projects directory.",
+              "Attempt parent traversal, an outside path, a blocked import, and an infinite loop.",
+              "Record deterministic stop reasons without leaking private absolute paths."
+            ],
+            "deliverable": "A path-policy and runner test suite plus an operator-facing boundary explanation.",
+            "recipe_id": null
+          },
+          "checkpoint": {
+            "id": "checkpoint.workspace-runner",
+            "required_score": 1.0,
+            "checks": [
+              "Source and workspace roots cannot contain one another.",
+              "Traversal and resolved outside paths fail closed.",
+              "Timeout and restricted-import fixtures stop cleanly.",
+              "Documentation directs hostile samples to a disposable VM."
+            ]
+          },
+          "source_ids": ["python-pathlib", "python-subprocess", "nist-ssdf"],
+          "glossary_ids": ["workspace.sandbox", "security.least-privilege", "security.secret"],
+          "error_card_ids": ["workspace.path-boundary", "security.secret-detected"]
+        },
+        {
+          "id": "module.operator-ui-backup",
+          "title": "Operator UI, Run Registry, Backup, and Restore",
+          "summary": "Expose engine state without coupling the engine to the interface, and prove that private work can be recovered.",
+          "objectives": [
+            "Keep UI actions behind small service interfaces with testable inputs and results.",
+            "Store run metadata separately from large arrays and private datasets.",
+            "Perform non-destructive backup to a marked external destination.",
+            "Restore to a new directory and verify expected file hashes."
+          ],
+          "lab": {
+            "title": "Vertical slice and restore drill",
+            "instructions": [
+              "Create a project through the workspace service and open it in the file tree.",
+              "Run Shape Detective and persist its redacted run metadata.",
+              "Back up source and private workspace to a marked temporary destination.",
+              "Restore the workspace to a new path and compare file hashes."
+            ],
+            "deliverable": "A thin project-calculator-run-backup workflow with a restore report.",
+            "recipe_id": "recipe.push-guardian-restore"
+          },
+          "checkpoint": {
+            "id": "checkpoint.operator-ui-backup",
+            "required_score": 1.0,
+            "checks": [
+              "UI does not import private project content into the public source tree.",
+              "Backup refuses an unmarked nonempty destination.",
+              "Backup does not delete destination-only files after local deletion.",
+              "Restore never overwrites the active workspace and expected hashes match."
+            ]
+          },
+          "source_ids": ["python-pathlib", "python-unittest", "nist-ssdf", "streamlit-get-started", "fastapi-tutorial", "opentelemetry-signals"],
+          "glossary_ids": ["backup.snapshot", "persistence.checkpoint", "reproducibility.deterministic-run", "workspace.sandbox"],
+          "error_card_ids": ["workspace.path-boundary", "checkpoint.untrusted-pickle"]
+        }
+      ]
+    },
+    {
+      "id": "track.secure-delivery",
+      "title": "Secure Delivery: GitHub, Supply Chain, and Open Source",
+      "level": "advanced",
+      "summary": "Build a guarded publication and release process that reports evidence, fails safely, and never assumes automation is infallible.",
+      "prerequisite_track_ids": ["track.launch-pad", "track.systems-lab"],
+      "capstone_recipe_id": "recipe.push-guardian-restore",
+      "modules": [
+        {
+          "id": "module.release-guard",
+          "title": "Push Guard and Dependency Findings",
+          "summary": "Inspect exact outgoing content for privacy, secrets, test failures, and dependency advisories before any network action.",
+          "objectives": [
+            "Identify the exact outgoing commit range and changed files.",
+            "Distinguish local dependency audit results from authenticated GitHub Dependabot alerts.",
+            "Redact sensitive evidence and provide reversible remediation.",
+            "Block policy-threshold findings without force push or silent rewriting."
+          ],
+          "lab": {
+            "title": "Push Guardian fixture suite",
+            "instructions": [
+              "Create clean, fake-secret, ignored-tracked, failing-test, and advisory fixtures.",
+              "Run a dry scan against the exact proposed publication set.",
+              "Verify deterministic finding IDs, severity, source, and safe action.",
+              "Confirm the clean fixture passes and unsafe fixtures block."
+            ],
+            "deliverable": "A redacted JSON and human-readable release-guard report.",
+            "recipe_id": "recipe.push-guardian-restore"
+          },
+          "checkpoint": {
+            "id": "checkpoint.release-guard",
+            "required_score": 1.0,
+            "checks": [
+              "Report contains no fake secret value or private absolute path.",
+              "Ignored-but-tracked and non-fast-forward cases explain safe next steps.",
+              "No-patch advisory never claims an automatic fix.",
+              "No commit, push, alert dismissal, or dependency rewrite occurs in dry-run mode."
+            ]
+          },
+          "source_ids": ["git-hooks", "git-gitignore", "github-supply-chain", "github-dependabot-config", "github-dependabot-api", "github-push-protection"],
+          "glossary_ids": ["git.index", "dependency.lockfile", "security.cve", "security.ghsa", "security.secret"],
+          "error_card_ids": ["git.ignored-but-tracked", "git.push-conflict", "security.secret-detected", "security.unfixed-advisory"]
+        },
+        {
+          "id": "module.secure-release",
+          "title": "CI, SBOM, Packaging, and Release Risk",
+          "summary": "Produce installable, attributable artifacts with test, dependency, integrity, and risk evidence.",
+          "objectives": [
+            "Build source and wheel artifacts from declared project metadata.",
+            "Run tests and static checks in repeatable CI jobs.",
+            "Attach artifact checksums and a build-matched dependency inventory.",
+            "Apply NIST SSDF and AI RMF questions to release readiness."
+          ],
+          "lab": {
+            "title": "Release candidate rehearsal",
+            "instructions": [
+              "Build artifacts from a clean checkout and locked environment.",
+              "Install the wheel into a fresh environment and launch a smoke test.",
+              "Generate checksums and dependency inventory for those exact artifacts.",
+              "Complete a release risk record with owner, evidence, exceptions, and rollback."
+            ],
+            "deliverable": "A release candidate folder and signed-off readiness checklist without publishing it.",
+            "recipe_id": "recipe.push-guardian-restore"
+          },
+          "checkpoint": {
+            "id": "checkpoint.secure-release",
+            "required_score": 1.0,
+            "checks": [
+              "Fresh-environment install and smoke test pass.",
+              "CI covers supported Python and target Windows configurations.",
+              "Checksums and inventory correspond to the final artifacts.",
+              "Open blocking findings stop release; exceptions are explicit, owned, and time-bounded."
+            ]
+          },
+          "source_ids": ["pypa-packaging", "github-actions", "github-supply-chain", "nist-ssdf", "nist-ai-rmf"],
+          "glossary_ids": ["dependency.lockfile", "security.sbom", "security.least-privilege", "backup.snapshot"],
+          "error_card_ids": ["security.unfixed-advisory", "security.secret-detected", "checkpoint.untrusted-pickle"]
+        }
+      ]
+    },
+    {
+      "id": "track.capstone",
+      "title": "Capstone: From Equation to Installable Tool",
+      "level": "capstone",
+      "summary": "Integrate a transparent model, educational diagnostics, private workspace, recovery, and guarded release evidence.",
+      "prerequisite_track_ids": ["track.neural-workshop", "track.systems-lab", "track.secure-delivery"],
+      "capstone_recipe_id": "recipe.push-guardian-restore",
+      "modules": [
+        {
+          "id": "module.capstone-build",
+          "title": "Auditable AI System Capstone",
+          "summary": "Choose a tabular classifier, small signal classifier, character transformer, or release-and-backup appliance and ship a complete local artifact.",
+          "objectives": [
+            "State the problem, data boundary, metric, threat model, and non-goals.",
+            "Implement the required core behavior from NumPy primitives with numerical tests.",
+            "Expose diagnostics that explain shapes, gradients, training state, and failure modes.",
+            "Demonstrate reproducible install, private workspace handling, backup restore, and guarded release."
+          ],
+          "lab": {
+            "title": "Capstone build and defense",
+            "instructions": [
+              "Submit a short design record and acceptance matrix before implementation.",
+              "Build the smallest vertical slice and pass numerical gates before UI expansion.",
+              "Run fault, privacy, restore, and clean-install drills.",
+              "Present evidence and explain one limitation in each of correctness, security, and generalization."
+            ],
+            "deliverable": "An installable local project, tests, operator guide, learning explanation, and release evidence bundle.",
+            "recipe_id": null
+          },
+          "checkpoint": {
+            "id": "checkpoint.capstone-build",
+            "required_score": 0.8,
+            "checks": [
+              "Numerical correctness contributes 30 percent and all hard numeric gates pass.",
+              "Tests and diagnostics contribute 20 percent; explainability 15 percent; reproducibility 10 percent.",
+              "Security and privacy contribute 10 percent; packaging and UX 10 percent; attribution 5 percent.",
+              "Overall score is at least 80 percent with zero failed hard security or recovery gates."
+            ]
+          },
+          "source_ids": ["paper-autodiff", "nist-ai-rmf", "nist-ssdf", "pypa-packaging", "github-actions"],
+          "glossary_ids": ["reproducibility.deterministic-run", "workspace.sandbox", "security.sbom", "backup.snapshot"],
+          "error_card_ids": ["numeric.nonfinite", "training.diverging-loss", "workspace.path-boundary", "security.secret-detected", "security.unfixed-advisory"]
+        }
+      ]
+    }
+  ]
+}

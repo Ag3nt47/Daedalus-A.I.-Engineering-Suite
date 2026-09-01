@@ -1,0 +1,437 @@
+{
+  "schema_version": 1,
+  "resource_version": "2026.08",
+  "summary_policy": "Offline summaries are original Daedalus prose. External source text is not copied.",
+  "sources": [
+    {
+      "id": "python-tutorial",
+      "title": "The Python Tutorial",
+      "url": "https://docs.python.org/3/tutorial/",
+      "publisher": "Python Software Foundation",
+      "kind": "official-documentation",
+      "levels": ["beginner"],
+      "topics": ["python", "programming"],
+      "offline_summary": "A guided introduction to Python syntax, data structures, functions, modules, classes, and errors."
+    },
+    {
+      "id": "python-venv",
+      "title": "Virtual Environments and Packages",
+      "url": "https://docs.python.org/3/tutorial/venv.html",
+      "publisher": "Python Software Foundation",
+      "kind": "official-documentation",
+      "levels": ["beginner"],
+      "topics": ["python", "environment", "dependencies"],
+      "offline_summary": "Explains why isolated Python environments prevent dependency conflicts and how to create and use one."
+    },
+    {
+      "id": "python-unittest",
+      "title": "unittest - Unit testing framework",
+      "url": "https://docs.python.org/3/library/unittest.html",
+      "publisher": "Python Software Foundation",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder"],
+      "topics": ["python", "testing"],
+      "offline_summary": "Defines test cases, fixtures, suites, runners, assertions, and automated discovery in Python's standard library."
+    },
+    {
+      "id": "python-pathlib",
+      "title": "pathlib - Object-oriented filesystem paths",
+      "url": "https://docs.python.org/3/library/pathlib.html",
+      "publisher": "Python Software Foundation",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder"],
+      "topics": ["python", "filesystem", "workspace"],
+      "offline_summary": "Documents platform-aware path objects and safe, readable operations for navigating files and directories."
+    },
+    {
+      "id": "python-subprocess",
+      "title": "subprocess - Subprocess management",
+      "url": "https://docs.python.org/3/library/subprocess.html",
+      "publisher": "Python Software Foundation",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["python", "process", "sandbox", "security"],
+      "offline_summary": "Describes child-process execution, timeouts, captured output, and shell-injection risks."
+    },
+    {
+      "id": "python-pickle",
+      "title": "pickle - Python object serialization",
+      "url": "https://docs.python.org/3/library/pickle.html",
+      "publisher": "Python Software Foundation",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["python", "serialization", "security"],
+      "offline_summary": "Documents Python object serialization and the critical rule that untrusted pickle data can execute code."
+    },
+    {
+      "id": "pypa-packaging",
+      "title": "Packaging Python Projects",
+      "url": "https://packaging.python.org/en/latest/tutorials/packaging-projects/",
+      "publisher": "Python Packaging Authority",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["python", "packaging", "release"],
+      "offline_summary": "Shows the standard source layout, project metadata, build artifacts, licenses, and installation verification for Python packages."
+    },
+    {
+      "id": "mit-linear-algebra",
+      "title": "MIT 18.06SC Linear Algebra",
+      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
+      "publisher": "MIT OpenCourseWare",
+      "kind": "official-course",
+      "levels": ["beginner", "builder"],
+      "topics": ["math", "linear-algebra"],
+      "offline_summary": "Covers matrix operations, vector spaces, least squares, eigenvalues, positive definite matrices, and singular value decomposition."
+    },
+    {
+      "id": "mit-calculus",
+      "title": "MIT 18.01SC Single Variable Calculus",
+      "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",
+      "publisher": "MIT OpenCourseWare",
+      "kind": "official-course",
+      "levels": ["beginner", "builder"],
+      "topics": ["math", "calculus", "optimization"],
+      "offline_summary": "Develops derivatives as rates of change, differentiation rules, optimization, integration, and series."
+    },
+    {
+      "id": "mit-probability",
+      "title": "MIT 18.05 Introduction to Probability and Statistics",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/",
+      "publisher": "MIT OpenCourseWare",
+      "kind": "official-course",
+      "levels": ["beginner", "builder"],
+      "topics": ["math", "probability", "statistics"],
+      "offline_summary": "Introduces random variables, distributions, conditional probability, inference, uncertainty, and linear regression."
+    },
+    {
+      "id": "numpy-beginners",
+      "title": "NumPy: the absolute basics for beginners",
+      "url": "https://numpy.org/doc/stable/user/absolute_beginners.html",
+      "publisher": "NumPy Developers",
+      "kind": "official-documentation",
+      "levels": ["beginner"],
+      "topics": ["numpy", "arrays"],
+      "offline_summary": "Introduces arrays, dimensions, shapes, indexing, aggregation, and vectorized numerical work."
+    },
+    {
+      "id": "numpy-fundamentals",
+      "title": "NumPy fundamentals",
+      "url": "https://numpy.org/doc/stable/user/basics.html",
+      "publisher": "NumPy Developers",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder"],
+      "topics": ["numpy", "arrays", "memory"],
+      "offline_summary": "Collects the core rules for creation, indexing, dtypes, broadcasting, copies, views, and universal functions."
+    },
+    {
+      "id": "numpy-broadcasting",
+      "title": "Broadcasting",
+      "url": "https://numpy.org/doc/stable/user/basics.broadcasting.html",
+      "publisher": "NumPy Developers",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder"],
+      "topics": ["numpy", "arrays", "broadcasting"],
+      "offline_summary": "Defines trailing-axis compatibility and explains how differently shaped arrays participate in elementwise operations."
+    },
+    {
+      "id": "numpy-dtypes",
+      "title": "Data types",
+      "url": "https://numpy.org/doc/stable/user/basics.types.html",
+      "publisher": "NumPy Developers",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder"],
+      "topics": ["numpy", "dtype", "numerical-stability"],
+      "offline_summary": "Explains NumPy scalar types, precision, conversion, and why a chosen dtype changes range, accuracy, and memory."
+    },
+    {
+      "id": "numpy-linalg",
+      "title": "Linear algebra",
+      "url": "https://numpy.org/doc/stable/reference/routines.linalg.html",
+      "publisher": "NumPy Developers",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["numpy", "linear-algebra"],
+      "offline_summary": "Reference for matrix products, norms, decompositions, eigenproblems, least squares, and systems of equations."
+    },
+    {
+      "id": "numpy-rng",
+      "title": "Random Generator",
+      "url": "https://numpy.org/doc/stable/reference/random/generator.html",
+      "publisher": "NumPy Developers",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder"],
+      "topics": ["numpy", "randomness", "reproducibility"],
+      "offline_summary": "Documents Generator, explicit seeds, distributions, and reproducible random-number streams within a recorded environment."
+    },
+    {
+      "id": "numpy-savez",
+      "title": "numpy.savez",
+      "url": "https://numpy.org/doc/stable/reference/generated/numpy.savez.html",
+      "publisher": "NumPy Developers",
+      "kind": "official-documentation",
+      "levels": ["builder"],
+      "topics": ["numpy", "serialization", "checkpoint"],
+      "offline_summary": "Defines the non-executable NPZ container used to save multiple named arrays."
+    },
+    {
+      "id": "git-book",
+      "title": "Pro Git",
+      "url": "https://git-scm.com/book/en/v2",
+      "publisher": "Git Project",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder", "advanced"],
+      "topics": ["git", "version-control"],
+      "offline_summary": "Explains Git's snapshot model, staging area, commits, branches, remotes, merging, recovery, and collaboration."
+    },
+    {
+      "id": "git-gitignore",
+      "title": "gitignore documentation",
+      "url": "https://git-scm.com/docs/gitignore",
+      "publisher": "Git Project",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder"],
+      "topics": ["git", "privacy", "workspace"],
+      "offline_summary": "Defines ignore-pattern precedence and the key limitation that ignore rules do not affect files already tracked."
+    },
+    {
+      "id": "git-hooks",
+      "title": "githooks documentation",
+      "url": "https://git-scm.com/docs/githooks",
+      "publisher": "Git Project",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["git", "automation", "release-guard"],
+      "offline_summary": "Describes client and server hooks, their inputs, execution points, and how a nonzero result can stop an operation."
+    },
+    {
+      "id": "github-actions",
+      "title": "Understanding GitHub Actions",
+      "url": "https://docs.github.com/en/actions/get-started/understand-github-actions",
+      "publisher": "GitHub",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["github", "ci", "release"],
+      "offline_summary": "Introduces event-driven workflows, jobs, runners, steps, artifacts, and automated build and test pipelines."
+    },
+    {
+      "id": "github-supply-chain",
+      "title": "Supply chain security",
+      "url": "https://docs.github.com/en/code-security/concepts/supply-chain-security/supply-chain-security",
+      "publisher": "GitHub",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["github", "dependencies", "security", "sbom"],
+      "offline_summary": "Maps manifests and lockfiles to GitHub's dependency graph, review, alerts, updates, SBOM, and provenance features."
+    },
+    {
+      "id": "github-dependabot-config",
+      "title": "About the dependabot.yml file",
+      "url": "https://docs.github.com/en/code-security/concepts/supply-chain-security/about-the-dependabot-yml-file",
+      "publisher": "GitHub",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["github", "dependabot", "dependencies"],
+      "offline_summary": "Explains how repository configuration selects package ecosystems, manifest locations, update schedules, and pull-request behavior."
+    },
+    {
+      "id": "github-dependabot-api",
+      "title": "REST API endpoints for Dependabot alerts",
+      "url": "https://docs.github.com/en/rest/dependabot/alerts",
+      "publisher": "GitHub",
+      "kind": "official-documentation",
+      "levels": ["advanced"],
+      "topics": ["github", "dependabot", "api", "security"],
+      "offline_summary": "Defines authenticated repository and organization endpoints for reading and managing Dependabot alerts."
+    },
+    {
+      "id": "github-push-protection",
+      "title": "Push protection from the command line",
+      "url": "https://docs.github.com/en/code-security/concepts/secret-security/command-line-push-protection",
+      "publisher": "GitHub",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["github", "secrets", "security", "push"],
+      "offline_summary": "Explains how supported secrets can block a push and why exposed credentials must be rotated rather than merely hidden."
+    },
+    {
+      "id": "nist-ssdf",
+      "title": "NIST SP 800-218 Secure Software Development Framework 1.1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "publisher": "National Institute of Standards and Technology",
+      "kind": "standard",
+      "levels": ["advanced"],
+      "topics": ["security", "software-lifecycle", "risk"],
+      "offline_summary": "Organizes secure-development practices around preparing the organization, protecting software, producing well-secured releases, and responding to vulnerabilities."
+    },
+    {
+      "id": "nist-ai-rmf",
+      "title": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10",
+      "publisher": "National Institute of Standards and Technology",
+      "kind": "standard",
+      "levels": ["advanced"],
+      "topics": ["ai", "security", "risk", "governance"],
+      "offline_summary": "Provides voluntary functions and vocabulary for governing, mapping, measuring, and managing risks in AI systems."
+    },
+    {
+      "id": "paper-backprop",
+      "title": "Learning representations by back-propagating errors",
+      "url": "https://www.nature.com/articles/323533a0",
+      "publisher": "Nature",
+      "kind": "original-paper",
+      "levels": ["builder", "advanced"],
+      "topics": ["neural-networks", "backpropagation", "history"],
+      "offline_summary": "The landmark 1986 report showing how multilayer networks can learn internal representations by propagating output error backward."
+    },
+    {
+      "id": "paper-autodiff",
+      "title": "Automatic Differentiation in Machine Learning: a Survey",
+      "url": "https://jmlr.org/papers/v18/17-468.html",
+      "publisher": "Journal of Machine Learning Research",
+      "kind": "primary-survey",
+      "levels": ["builder", "advanced"],
+      "topics": ["autograd", "backpropagation", "calculus"],
+      "offline_summary": "Distinguishes automatic, symbolic, and numerical differentiation and explains forward and reverse accumulation."
+    },
+    {
+      "id": "paper-glorot",
+      "title": "Understanding the difficulty of training deep feedforward neural networks",
+      "url": "https://proceedings.mlr.press/v9/glorot10a",
+      "publisher": "Proceedings of Machine Learning Research",
+      "kind": "original-paper",
+      "levels": ["advanced"],
+      "topics": ["neural-networks", "initialization", "gradients"],
+      "offline_summary": "Analyzes activation and gradient behavior in deep networks and proposes variance-aware parameter initialization."
+    },
+    {
+      "id": "paper-adam",
+      "title": "Adam: A Method for Stochastic Optimization",
+      "url": "https://arxiv.org/abs/1412.6980",
+      "publisher": "arXiv",
+      "kind": "original-paper",
+      "levels": ["builder", "advanced"],
+      "topics": ["optimization", "adam", "neural-networks"],
+      "offline_summary": "Introduces an optimizer that combines moving estimates of first and second gradient moments with bias correction."
+    },
+    {
+      "id": "paper-dropout",
+      "title": "Dropout: A Simple Way to Prevent Neural Networks from Overfitting",
+      "url": "https://jmlr.org/papers/v15/srivastava14a.html",
+      "publisher": "Journal of Machine Learning Research",
+      "kind": "original-paper",
+      "levels": ["advanced"],
+      "topics": ["neural-networks", "regularization", "dropout"],
+      "offline_summary": "Develops stochastic unit removal during training as a practical regularizer and model-averaging approximation."
+    },
+    {
+      "id": "paper-batchnorm",
+      "title": "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift",
+      "url": "https://proceedings.mlr.press/v37/ioffe15",
+      "publisher": "Proceedings of Machine Learning Research",
+      "kind": "original-paper",
+      "levels": ["advanced"],
+      "topics": ["neural-networks", "normalization", "optimization"],
+      "offline_summary": "Introduces normalization of mini-batch activations as a trainable architectural operation."
+    },
+    {
+      "id": "paper-transformer",
+      "title": "Attention Is All You Need",
+      "url": "https://papers.nips.cc/paper/7181-attention-is-all-you-need",
+      "publisher": "Neural Information Processing Systems",
+      "kind": "original-paper",
+      "levels": ["advanced"],
+      "topics": ["transformer", "attention", "sequence-modeling"],
+      "offline_summary": "Presents an encoder-decoder architecture built from attention, feed-forward blocks, residual paths, normalization, and positional information."
+    },
+    {
+      "id": "pytorch-reproducibility",
+      "title": "PyTorch Reproducibility",
+      "url": "https://docs.pytorch.org/docs/stable/notes/randomness.html",
+      "publisher": "PyTorch Foundation",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["pytorch", "reproducibility", "randomness", "training"],
+      "offline_summary": "Explains random-state control, deterministic operations, performance tradeoffs, and why results are not guaranteed across releases or platforms."
+    },
+    {
+      "id": "huggingface-trainer",
+      "title": "Hugging Face Transformers Trainer",
+      "url": "https://huggingface.co/docs/transformers/main/trainer",
+      "publisher": "Hugging Face",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["transformers", "training", "distributed", "framework"],
+      "offline_summary": "Documents a configurable training and evaluation loop with batching, callbacks, mixed precision, and distributed strategies for Transformer models."
+    },
+    {
+      "id": "dvc-start",
+      "title": "DVC Data and Model Versioning",
+      "url": "https://dvc.org/doc/start/data-management/data-versioning",
+      "publisher": "DVC",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["data", "version-control", "lineage", "experiments"],
+      "offline_summary": "Shows how small metadata files connect Git revisions to large data and model artifacts stored outside the code repository."
+    },
+    {
+      "id": "hydra-introduction",
+      "title": "Hydra Configuration Framework",
+      "url": "https://hydra.cc/docs/intro/",
+      "publisher": "Hydra",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["configuration", "experiments", "reproducibility"],
+      "offline_summary": "Introduces composable hierarchical configuration, command-line overrides, local or remote launchers, and repeatable parameter sweeps."
+    },
+    {
+      "id": "mlflow-tracking",
+      "title": "MLflow Experiment Tracking",
+      "url": "https://mlflow.org/docs/latest/ml/tracking",
+      "publisher": "MLflow",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["experiments", "metrics", "artifacts", "model-registry"],
+      "offline_summary": "Describes runs that record parameters, metrics, datasets, models, artifacts, and source context in local or shared tracking stores."
+    },
+    {
+      "id": "huggingface-model-cards",
+      "title": "Hugging Face Model Cards",
+      "url": "https://huggingface.co/docs/hub/model-cards",
+      "publisher": "Hugging Face",
+      "kind": "official-documentation",
+      "levels": ["beginner", "builder", "advanced"],
+      "topics": ["model-card", "evaluation", "governance", "release"],
+      "offline_summary": "Defines model documentation covering intended use, limits, training parameters, datasets, evaluation results, bias, and ethical considerations."
+    },
+    {
+      "id": "opentelemetry-signals",
+      "title": "OpenTelemetry Signals",
+      "url": "https://opentelemetry.io/docs/concepts/signals/",
+      "publisher": "OpenTelemetry",
+      "kind": "official-documentation",
+      "levels": ["advanced"],
+      "topics": ["observability", "metrics", "logs", "traces", "deployment"],
+      "offline_summary": "Explains vendor-neutral traces, metrics, logs, and contextual signals used to understand production behavior."
+    },
+    {
+      "id": "streamlit-get-started",
+      "title": "Get started with Streamlit",
+      "url": "https://docs.streamlit.io/get-started",
+      "publisher": "Streamlit",
+      "kind": "official-documentation",
+      "levels": ["builder"],
+      "topics": ["ui", "data-app"],
+      "offline_summary": "Introduces Streamlit's rerun-based application model, widgets, layout, state, caching, and multipage data apps."
+    },
+    {
+      "id": "fastapi-tutorial",
+      "title": "FastAPI Tutorial - User Guide",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "publisher": "FastAPI",
+      "kind": "official-documentation",
+      "levels": ["builder", "advanced"],
+      "topics": ["api", "ui-boundary", "web"],
+      "offline_summary": "Builds typed HTTP endpoints, validation, error handling, testing, and generated OpenAPI documentation step by step."
+    }
+  ]
+}
