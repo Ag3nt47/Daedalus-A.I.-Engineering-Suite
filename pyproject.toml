@@ -32,7 +32,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "bandit>=1.9,<2",
-  "cyclonedx-bom>=7.3,<8",
+  "cyclonedx-bom>=7.3,<9",
   "pip-audit>=2.7,<3",
   "pytest>=8,<10",
   "pytest-cov>=5,<8",
